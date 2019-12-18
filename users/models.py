@@ -71,4 +71,4 @@ class User(AbstractUser):
             return self.preferred_language
 
     def get_user_age(self):
-        return int((datetime.date.today() - self.birthdate).days / 365.25)
+        return int((datetime.date.today() - datetime.datetime.strptime(str(self.birthdate), '%Y-%m-%d').date()).days / 365.25)

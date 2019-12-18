@@ -555,10 +555,10 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
             return True
 
         if self.min_age and is_underage(user, self.min_age):
-                return False
+            return False
 
-        if self.max_age and is_underage(user, self.max_age):
-                return False
+        if self.max_age and is_overage(user, self.max_age):
+            return False
 
         if hasattr(self, '_permission_checker'):
             checker = self._permission_checker
