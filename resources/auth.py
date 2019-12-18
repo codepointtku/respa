@@ -27,7 +27,7 @@ def is_underage(user, age):
             return False                 # Would require custom AnonymousUser class
         else:
             if is_staff(user):
-                return True
+                return False
             return user.get_user_age() < age
     except Exception as ex:
         return False                     # Default to False
@@ -39,7 +39,7 @@ def is_overage(user, age):
             return False
         else:
             if is_staff(user):
-                return True
+                return False
             return user.get_user_age() > age
     except:
         return False
