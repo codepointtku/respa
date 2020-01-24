@@ -60,7 +60,8 @@ env = environ.Env(
     OIDC_API_SCOPE_PREFIX=(str,''),
     OIDC_REQUIRE_API_SCOPE_FOR_AUTHENTICATION=(bool, False),
     OIDC_ISSUER=(str, ''),
-    OIDC_LEEWAY=(int, 0)
+    OIDC_LEEWAY=(int, 0),
+    GSM_NOTIFICATION_ADDRESS=(str, ''),
 )
 environ.Env.read_env()
 # used for generating links to images, when no request context is available
@@ -309,6 +310,7 @@ OIDC_AUTH = {
 
 CSRF_COOKIE_NAME = '%s-csrftoken' % env.str('COOKIE_PREFIX')
 SESSION_COOKIE_NAME = '%s-sessionid' % env.str('COOKIE_PREFIX')
+GSM_NOTIFICATION_ADDRESS = env('GSM_NOTIFICATION_ADDRESS')
 
 
 from easy_thumbnails.conf import Settings as thumbnail_settings  # noqa
@@ -373,6 +375,8 @@ elif USE_DJANGO_DEFAULT_EMAIL:
     EMAIL_HOST_USER = env('MAIL_DEFAULT_FROM')
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
 
 RESPA_ADMIN_USERNAME_LOGIN = env.bool(
     'RESPA_ADMIN_USERNAME_LOGIN', default=True)

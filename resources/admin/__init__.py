@@ -24,7 +24,7 @@ from resources.admin.period_inline import PeriodInline
 
 from ..models import (
     AccessibilityValue, AccessibilityViewpoint, Day, Equipment, EquipmentAlias, EquipmentCategory, Purpose,
-    Reservation, ReservationBulk, ReservationMetadataField, ReservationMetadataSet, Resource, ResourceAccessibility,
+    Reservation, ReservationBulk, ReservationReminder, ReservationMetadataField, ReservationMetadataSet, Resource, ResourceAccessibility,
     ResourceEquipment, ResourceGroup, ResourceImage, ResourceType, TermsOfUse,
     Unit, UnitAuthorization, UnitIdentifier, UnitGroup, UnitGroupAuthorization)
 from munigeo.models import Municipality
@@ -368,6 +368,9 @@ class ReservationMetadataFieldAdmin(admin.ModelAdmin):
 class ReservationBulkAdmin(admin.ModelAdmin):
     pass
 
+class ReservationReminderAdmin(admin.ModelAdmin):
+    extra_readonly_fields_on_update = ('reservation_type',)
+
 admin_site.register(ResourceImage, ResourceImageAdmin)
 admin_site.register(Resource, ResourceAdmin)
 admin_site.register(Reservation, ReservationAdmin)
@@ -381,6 +384,7 @@ admin_site.register(EquipmentCategory, EquipmentCategoryAdmin)
 admin_site.register(TermsOfUse, TermsOfUseAdmin)
 admin_site.register(ReservationMetadataField, ReservationMetadataFieldAdmin)
 admin.site.register(ReservationBulk, ReservationBulkAdmin)
+admin.site.register(ReservationReminder, ReservationReminderAdmin)
 admin_site.register(ReservationMetadataSet, ReservationMetadataSetAdmin)
 admin.site.register(ResourceGroup, ResourceGroupAdmin)
 if admin.site.is_registered(Municipality):

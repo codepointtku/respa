@@ -268,6 +268,13 @@ cd $HOME/respa
 ./manage.py respa_exchange_listen_notifications --log-file=$HOME/logs/exchange_sync.log --pid-file=$HOME/exchange_sync.pid --daemonize
 ```
 
+### Delayed SMS Notifications
+
+```sh
+$ chmod +x ./handle_reminders.sh
+$ ./handle_reminders.sh
+```
+
 Requirements
 ------------
 

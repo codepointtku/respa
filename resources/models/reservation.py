@@ -3,6 +3,8 @@ import logging
 import datetime
 import pytz
 
+
+from datetime import datetime, timedelta
 from django.utils import timezone
 import django.contrib.postgres.fields as pgfields
 from django.conf import settings
@@ -170,6 +172,10 @@ class Reservation(ModifiableModel):
 
     # If the reservation was imported from another system, you can store the original ID in the field below.
     origin_id = models.CharField(verbose_name=_('Original ID'), max_length=50, editable=False, null=True)
+
+
+    reminder = models.ForeignKey('ReservationReminder', verbose_name=_('Reservation Reminder'), db_index=True, related_name='ReservationReminders',
+                                on_delete=models.SET_NULL, null=True, blank=True)
 
     objects = ReservationQuerySet.as_manager()
 
@@ -362,6 +368,21 @@ class Reservation(ModifiableModel):
         end = self.end.astimezone(tz)
         return format_dt_range(translation.get_language(), begin, end)
 
+    def create_reminder(self):
+        r_date = self.begin - timedelta(hours=int(self.resource.unit.sms_reminder_delay))
+        reminder = ReservationReminder()
+        reminder.reservation = self
+        reminder.reminder_date = r_date
+        reminder.save()
+        self.reminder = reminder
+    
+    def modify_reminder(self):
+        if not self.reminder:
+            return
+        r_date = self.begin - timedelta(hours=int(self.resource.unit.sms_reminder_delay))
+        self.reminder.reminder_date = r_date
+        self.reminder.save()
+
     def __str__(self):
         if self.state != Reservation.CONFIRMED:
             state_str = ' (%s)' % self.state
@@ -485,7 +506,14 @@ class Reservation(ModifiableModel):
             })
         return context
 
-    def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}):
+    def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):
+        if self.resource.unit.sms_reminder:
+            if self.reminder:
+                self.reminder.notification_type = self.reminder.notification_type if self.reminder.notification_type else notification_type
+                self.reminder.user = self.reminder.user if self.reminder.user else user
+                self.reminder.action_by_official = self.reminder.action_by_official if self.reminder.action_by_official else action_by_official
+                self.reminder.save()
+        
         """
         Stuff common to all reservation related mails.
 
@@ -494,7 +522,7 @@ class Reservation(ModifiableModel):
         try:
             notification_template = NotificationTemplate.objects.get(type=notification_type)
         except NotificationTemplate.DoesNotExist:
-            print('NotificationTemplate does not exist')
+            print('Notification type: %s does not exist' % notification_type)
             return
 
         if user:
@@ -518,6 +546,16 @@ class Reservation(ModifiableModel):
             print('NotifcationTemplateException: %s' % e)
             logger.error(e, exc_info=True, extra={'user': user.uuid})
             return
+
+        if is_reminder:
+            print("Sending SMS notification :: (%s) %s || LOCALE: %s"  % (self.reserver_phone_number, rendered_notification['subject'], language))
+            ret = send_respa_mail(
+                email_address='%s@%s' % (self.reserver_phone_number, settings.GSM_NOTIFICATION_ADDRESS),
+                subject=rendered_notification['subject'],
+                body=rendered_notification['short_message'],
+            )
+            print(ret[1])
+            return
         if staff_email:
             print("Sending automated mail :: (%s) %s || LOCALE: %s"  % (staff_email, rendered_notification['subject'], language))
             ret = send_respa_mail(
@@ -538,7 +576,6 @@ class Reservation(ModifiableModel):
                 attachments
             )
             print(ret[1])
-
     def notify_staff_about_reservation(self, notification):
         if self.resource.resource_staff_emails:
             for email in self.resource.resource_staff_emails:
@@ -547,7 +584,6 @@ class Reservation(ModifiableModel):
             notify_users = self.resource.get_users_with_perm('can_approve_reservation')
             if len(notify_users) > 100:
                 raise Exception("Refusing to notify more than 100 users (%s)" % self)
-                return
             for user in notify_users:
                 self.send_reservation_mail(notification, user=user)
 
@@ -586,7 +622,7 @@ class Reservation(ModifiableModel):
         ical_file = build_reservations_ical_file(reservations)
         attachment = 'reservation.ics', ical_file, 'text/calendar'
         notification = NotificationType.RESERVATION_CREATED_WITH_ACCESS_CODE_OFFICIAL_BY_OFFICIAL if action_by_official else NotificationType.RESERVATION_CREATED_WITH_ACCESS_CODE
-        self.send_reservation_mail(NotificationType.RESERVATION_CREATED_WITH_ACCESS_CODE,
+        self.send_reservation_mail(notification,
                                    attachments=[attachment], action_by_official=action_by_official)
 
     def send_access_code_created_mail(self):
@@ -627,3 +663,34 @@ class ReservationMetadataSet(ModifiableModel):
 
     def __str__(self):
         return self.name
+
+class ReservationReminderQuerySet(models.QuerySet):
+    pass
+
+class ReservationReminder(models.Model):
+    reservation = models.ForeignKey('Reservation', verbose_name=_('Reservation'), db_index=True, related_name='Reservations',
+                                 on_delete=models.CASCADE)
+    reminder_date = models.DateTimeField(verbose_name=_('Reminder Date'))
+
+    notification_type = models.CharField(verbose_name=_('Notification type'), max_length=32, null=True, blank=True)    
+    user = models.ForeignKey('users.User', verbose_name=_('User'), related_name='Users',
+                                 on_delete=models.CASCADE, null=True, blank=True)
+    action_by_official = models.BooleanField(verbose_name=_('Action by official'), null=True, blank=True)
+
+
+    objects = ReservationReminderQuerySet.as_manager()
+
+    def get_unix_timestamp(self):
+        return int((self.reminder_date.replace(tzinfo=pytz.timezone('Europe/Helsinki')) - datetime(year=1970, month=1, day=1, hour=0, minute=0, second=0).replace(tzinfo=pytz.timezone('Europe/Helsinki'))).total_seconds())
+
+
+    def remind(self):
+        self.reservation.send_reservation_mail(
+            notification_type=self.notification_type,
+            user = self.user,
+            action_by_official=self.action_by_official,
+            is_reminder=True
+        )
+
+    def __str__(self):
+        return '%s - %s' % (self.reservation, self.reservation.user.email)
