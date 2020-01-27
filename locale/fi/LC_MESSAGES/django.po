@@ -1622,3 +1622,8 @@ msgid "Reservation failed. Try again later."
 msgstr "Varaus epäonnistui. Yritä uudelleen hetken päästä."
 
 
+msgid "Send SMS Reminder"
+msgstr "Lähetä tekstiviestimuistutus varauksista"
+
+msgid "How many hours before reservation the reminder is sent"
+msgstr "Kuinka monta tuntia etukäteen lähetetään muistutus"

@@ -1265,3 +1265,10 @@ msgstr "Bokningen misslyckades. Någon av tiderna fattas."
 
 msgid "Reservation failed. Try again later."
 msgstr "Bokningen misslyckades. Försök igen senare."
+
+
+msgid "Send SMS Reminder"
+msgstr "Skicka SMS-påminnelse"
+
+msgid "How many hours before reservation the reminder is sent"
+msgstr "Hur många timmar före reserveringen ska SMS-påminnelsen skickas"

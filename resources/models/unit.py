@@ -79,9 +79,9 @@ class Unit(ModifiableModel, AutoIdentifiedModel):
     data_source_hours = models.CharField(max_length=128, blank=True, default='',
                                          verbose_name=_('External data source for opening hours'))
 
-    sms_reminder = models.BooleanField(verbose_name=_('SMS Reminder'), default=False)
+    sms_reminder = models.BooleanField(verbose_name=_('Send SMS Reminder'), default=False)
 
-    sms_reminder_delay = models.IntegerField(verbose_name=_('SMS Delay (hours)'), default=0,
+    sms_reminder_delay = models.IntegerField(verbose_name=_('How many hours before reservation the reminder is sent'), default=1,
                                     validators=[MinValueValidator(1), MaxValueValidator(23)])
 
     objects = UnitQuerySet.as_manager()
