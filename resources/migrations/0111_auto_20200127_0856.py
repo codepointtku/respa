@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='unit',
             name='sms_reminder_delay',
-            field=models.IntegerField(default=1, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(23)], verbose_name='How many hours before reservation the reminder is sent'),
+            field=models.IntegerField(default=1, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(8766)], verbose_name='How many hours before reservation the reminder is sent'),
         ),
     ]
