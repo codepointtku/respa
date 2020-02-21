@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 DRIVERS = (
     ('sipass', 'Siemens SiPass', 'kulkunen.drivers.sipass.SiPassDriver'),
+    ('abloy', 'Abloy', 'kulkunen.drivers.abloy.AbloyDriver'),
 )
 
 driver_classes = {}

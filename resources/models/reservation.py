@@ -311,8 +311,8 @@ class Reservation(ModifiableModel):
                     else:
                         self.send_reservation_cancelled_mail()
                         self.notify_staff_about_reservation(NotificationType.RESERVATION_CANCELLED_OFFICIAL)
-            else:
-                reservation_cancelled.send(sender=self.__class__, instance=self, user=user)
+
+            reservation_cancelled.send(sender=self.__class__, instance=self, user=user)
         self.state = new_state
         self.save()
 
@@ -375,7 +375,7 @@ class Reservation(ModifiableModel):
         reminder.reminder_date = r_date
         reminder.save()
         self.reminder = reminder
-    
+
     def modify_reminder(self):
         if not self.reminder:
             return
@@ -514,7 +514,7 @@ class Reservation(ModifiableModel):
                 self.reminder.user = self.reminder.user if self.reminder.user else user
                 self.reminder.action_by_official = self.reminder.action_by_official if self.reminder.action_by_official else action_by_official
                 self.reminder.save()
-        
+
         """
         Stuff common to all reservation related mails.
 
@@ -673,7 +673,7 @@ class ReservationReminder(models.Model):
                                  on_delete=models.CASCADE)
     reminder_date = models.DateTimeField(verbose_name=_('Reminder Date'))
 
-    notification_type = models.CharField(verbose_name=_('Notification type'), max_length=32, null=True, blank=True)    
+    notification_type = models.CharField(verbose_name=_('Notification type'), max_length=32, null=True, blank=True)
     user = models.ForeignKey('users.User', verbose_name=_('User'), related_name='Users',
                                  on_delete=models.CASCADE, null=True, blank=True)
     action_by_official = models.BooleanField(verbose_name=_('Action by official'), null=True, blank=True)
