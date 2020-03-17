@@ -247,12 +247,14 @@ class AbloyDriver(AccessControlDriver):
         starts_at = grant.starts_at.astimezone(tz).replace(tzinfo=None)
         ends_at = grant.ends_at.astimezone(tz).replace(tzinfo=None)
 
+        # if previous call failed with 422, it's possible the person data is not accurate...
         person_data = self.handle_api_get_person({"ssn": str(grant.reservation.user.uuid)},)
 
         # handle updating tokens
         person_tokens = self.convert_validity_times_from_timestamp(person_data["tokens"])
         person_tokens = self.add_token_types_and_surface_markings(person_tokens)
-        person_tokens = self.remove_token_from_person(person_tokens, grant.reservation.access_code)
+
+        person_tokens = self.remove_token_from_person(person_tokens, grant.access_code)
         person_tokens = self.convert_person_token_codes_to_hex(person_tokens)
 
         # handle updating roles
@@ -446,7 +448,7 @@ class AbloyDriver(AccessControlDriver):
     # Removes grant token from person.
     def remove_token_from_person(self, tokens, token):
         # make a copy of tokens and return the new copy instead of modifying the given one
-        #print("removing token "+token)
+        #print("removing token "+str(token))
         #print("removing token... tokens: " + str(tokens))
         new_tokens = tokens.copy()
 
@@ -537,3 +539,12 @@ class AbloyDriver(AccessControlDriver):
             return
         respa_resource.generate_access_codes = False
         respa_resource.save(update_fields=['generate_access_codes'])
+
+    # Override default remove grant to handle reservation access_code nulling
+    # to not leave old grant code hanging in the reservation
+    def prepare_remove_grant(self, grant):
+        grant.remove_at = timezone.now()
+        grant.save(update_fields=['remove_at'])
+        # remove reservation pin
+        grant.reservation.access_code = None
+        grant.reservation.save(update_fields=['access_code'])
