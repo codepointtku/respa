@@ -517,7 +517,7 @@ class ReservationFilterBackend(filters.BaseFilterBackend):
 
 class PhonenumberFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
-        phonenumber = request.query_params.get('reserver_phone_number', None)
+        phonenumber = request.query_params.get('reserver_phone_number', '')
         phonenumber = phonenumber.strip()
         if phonenumber and phonenumber.isdigit():
             queryset = queryset.filter(Q(reserver_phone_number=phonenumber) | Q(reserver_phone_number='+%s' % phonenumber))
