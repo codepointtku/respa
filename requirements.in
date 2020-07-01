@@ -71,6 +71,7 @@ more-itertools
 ntlm-auth
 oauthlib
 packaging
+phonenumbers
 Pillow
 pip-tools
 pluggy

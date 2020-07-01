@@ -32,6 +32,12 @@ from munigeo import api as munigeo_api
 from datetime import datetime
 from time import strptime, mktime, sleep
 
+import phonenumbers
+from phonenumbers.phonenumberutil import (
+    region_code_for_country_code
+)
+
+
 from resources.models import (
     Reservation, Resource, ReservationMetadataSet, ReservationHomeMunicipalityField,
     ReservationHomeMunicipalitySet, ReservationBulk, ReservationQuerySet
@@ -277,6 +283,11 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
 
         # Check user specific reservation restrictions relating to given period.
         resource.validate_reservation_period(reservation, request_user, data=data)
+        reserver_phone_number = data.get('reserver_phone_number', '')
+        if reserver_phone_number.startswith('+'):
+            if not region_code_for_country_code(phonenumbers.parse(reserver_phone_number).country_code):
+                raise ValidationError(dict(reserver_phone_number=_('Invalid country code')))
+            
 
         if data.get('staff_event', False):
             if not resource.can_create_staff_event(request_user):
@@ -504,6 +515,13 @@ class ReservationFilterBackend(filters.BaseFilterBackend):
             queryset = queryset.filter(begin__lte=times['end'])
         return queryset
 
+class PhonenumberFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        phonenumber = request.query_params.get('reserver_phone_number', None)
+        phonenumber = phonenumber.strip()
+        if phonenumber and phonenumber.isdigit():
+            queryset = queryset.filter(Q(reserver_phone_number=phonenumber) | Q(reserver_phone_number='+%s' % phonenumber))
+        return queryset
 
 class NeedManualConfirmationFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
@@ -851,7 +869,7 @@ class ReservationViewSet(munigeo_api.GeoModelAPIView, viewsets.ModelViewSet, Res
     if settings.RESPA_PAYMENTS_ENABLED:
         queryset = queryset.prefetch_related('order', 'order__order_lines', 'order__order_lines__product')
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter, UserFilterBackend, ReservationFilterBackend,
-                       NeedManualConfirmationFilterBackend, StateFilterBackend, CanApproveFilterBackend)
+                       NeedManualConfirmationFilterBackend, StateFilterBackend, CanApproveFilterBackend, PhonenumberFilterBackend)
     filterset_class = ReservationFilterSet
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, ReservationPermission)
     renderer_classes = (renderers.JSONRenderer, renderers.BrowsableAPIRenderer, ReservationExcelRenderer)
