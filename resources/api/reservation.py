@@ -17,6 +17,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.models import AnonymousUser
 from notifications.models import NotificationType
 from rest_framework import viewsets, serializers, filters, exceptions, permissions
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
@@ -251,9 +252,11 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
         is_resource_admin = resource.is_admin(request_user)
         is_resource_manager = resource.is_manager(request_user)
 
-        if request_user.preferred_language is None:
-            request_user.preferred_language = settings.LANGUAGES[0][0]
-            request_user.save()
+        if not isinstance(request_user, AnonymousUser):
+            if request_user.preferred_language is None:
+                request_user.preferred_language = settings.LANGUAGES[0][0]
+                request_user.save()
+
         if not resource.can_ignore_opening_hours(request_user):
             reservable_before = resource.get_reservable_before()
             if reservable_before and data['begin'] >= reservable_before:
@@ -403,7 +406,8 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
             del data['require_assistance']
             del data['require_workstation']
 
-        if instance.are_extra_fields_visible(user):
+        if (instance.are_extra_fields_visible(user) or
+                (self.context['request'].method == 'POST' and resource.authentication == 'unauthenticated')):
             cache = self.context.get('reservation_metadata_set_cache')
             supported_fields = set(resource.get_supported_reservation_extra_field_names(cache=cache))
         else:
@@ -631,6 +635,19 @@ class ReservationFilterSet(django_filters.rest_framework.FilterSet):
 
 
 class ReservationPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS or request.user and request.user.is_authenticated:
+            return True
+
+        resource_id = request.data.get('resource')
+        resource = None
+        try:
+            resource = Resource.objects.get(pk=resource_id)
+        except Resource.DoesNotExist:
+            return False
+
+        return request.method == 'POST' and resource.authentication == 'unauthenticated'
+
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -871,7 +888,7 @@ class ReservationViewSet(munigeo_api.GeoModelAPIView, viewsets.ModelViewSet, Res
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter, UserFilterBackend, ReservationFilterBackend,
                        NeedManualConfirmationFilterBackend, StateFilterBackend, CanApproveFilterBackend, PhonenumberFilterBackend)
     filterset_class = ReservationFilterSet
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, ReservationPermission)
+    permission_classes = (ReservationPermission, )
     renderer_classes = (renderers.JSONRenderer, renderers.BrowsableAPIRenderer, ReservationExcelRenderer)
     pagination_class = ReservationPagination
     authentication_classes = (
@@ -932,9 +949,12 @@ class ReservationViewSet(munigeo_api.GeoModelAPIView, viewsets.ModelViewSet, Res
         return queryset
 
     def perform_create(self, serializer):
-        override_data = {'created_by': self.request.user, 'modified_by': self.request.user}
+        user = self.request.user
+        override_data = {'created_by': user if user.is_authenticated else None,
+                         'modified_by': user if user.is_authenticated else None}
+
         if 'user' not in serializer.validated_data:
-            override_data['user'] = self.request.user
+            override_data['user'] = user if user.is_authenticated else None
         override_data['state'] = Reservation.CREATED
         instance = serializer.save(**override_data)
 

@@ -1737,3 +1737,6 @@ msgstr "Kotikunnan täytyy olla yksi annetuista kotikuntavaihtoehdoista"
 
 msgid "Reservation home municipality options"
 msgstr "Varauksen kotikuntavaihtoehdot"
+
+msgid "Unauthenticated"
+msgstr "Ei kirjautumista"

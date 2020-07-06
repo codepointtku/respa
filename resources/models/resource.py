@@ -181,6 +181,7 @@ class CleanResourceID(CommonGenericTaggedItemBase, TaggedItemBase):
 
 class Resource(ModifiableModel, AutoIdentifiedModel):
     AUTHENTICATION_TYPES = (
+        ('unauthenticated', _('Unauthenticated')),
         ('none', _('None')),
         ('weak', _('Weak')),
         ('strong', _('Strong'))

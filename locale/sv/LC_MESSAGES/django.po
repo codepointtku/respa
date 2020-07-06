@@ -1776,3 +1776,6 @@ msgstr "Hemkommun måste vara ett av de som finns i hemkommungruppen"
 
 msgid "Reservation home municipality options"
 msgstr "Reservering hemkommungrupp"
+
+msgid "Unauthenticated"
+msgstr "Ingen inloggning"
