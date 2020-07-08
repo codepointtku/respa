@@ -325,7 +325,7 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
         # Check maximum number of active reservations per user per resource.
         # Only new reservations are taken into account ie. a normal user can modify an existing reservation
         # even if it exceeds the limit. (one that was created via admin ui for example).
-        if reservation is None:
+        if reservation is None and not isinstance(request_user, AnonymousUser):
             resource.validate_max_reservations_per_user(request_user)
 
         # Run model clean

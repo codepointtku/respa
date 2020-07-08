@@ -264,7 +264,7 @@ class Reservation(ModifiableModel):
             return
         if new_state == Reservation.CONFIRMED:
             self.approver = user if user.is_authenticated else None
-            if user.is_authenticated:
+            if user.is_authenticated or self.resource.authentication == 'unauthenticated':
                 reservation_confirmed.send(sender=self.__class__, instance=self,
                                            user=user)
         elif old_state == Reservation.CONFIRMED:
@@ -485,7 +485,7 @@ class Reservation(ModifiableModel):
             if self.can_view_access_code(user) and self.access_code:
                 context['access_code'] = self.access_code
 
-            if self.user.is_staff:
+            if self.user and self.user.is_staff:
                 context['staff_name'] = self.user.get_display_name()
 
             if notification_type == NotificationType.RESERVATION_CONFIRMED:
@@ -550,8 +550,9 @@ class Reservation(ModifiableModel):
             else:
                 email_address = self.reserver_email_address or self.user.email
             user = self.user
-
-        language = self.preferred_language if not user.is_staff else DEFAULT_LANG
+        language = DEFAULT_LANG
+        if user and not user.is_staff:
+            language = self.preferred_language
         context = self.get_notification_context(language, notification_type=notification_type, extra_context=extra_context)
         try:
             if staff_email:
@@ -720,7 +721,7 @@ class ReservationReminder(models.Model):
     objects = ReservationReminderQuerySet.as_manager()
 
     def get_unix_timestamp(self):
-        return int((self.reminder_date.replace(tzinfo=pytz.timezone('Europe/Helsinki')) - datetime(year=1970, month=1, day=1, hour=0, minute=0, second=0).replace(tzinfo=pytz.timezone('Europe/Helsinki'))).total_seconds())
+        return int((self.reminder_date.replace(tzinfo=pytz.timezone('Europe/Helsinki')) - datetime.datetime(year=1970, month=1, day=1, hour=0, minute=0, second=0).replace(tzinfo=pytz.timezone('Europe/Helsinki'))).total_seconds())
 
 
     def remind(self):
@@ -732,4 +733,4 @@ class ReservationReminder(models.Model):
         )
 
     def __str__(self):
-        return '%s - %s' % (self.reservation, self.reservation.user.email)
+        return '%s - %s' % (self.reservation, self.reservation.reserver_email_address)
