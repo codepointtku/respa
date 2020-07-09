@@ -2,6 +2,8 @@ import contextlib
 import pytz
 
 from .base import AccessControlDriver, RemoteError
+from kulkunen.models import AccessControlGrant
+
 import jsonschema
 from django.core.exceptions import ValidationError
 import requests
@@ -178,6 +180,7 @@ class AbloyDriver(AccessControlDriver):
         grant.access_code = user.identifier
         grant.user = user
         grant.notify_access_code()
+        grant.remove_at = grant.ends_at
 
         tz = pytz.timezone('Europe/Helsinki')
         starts_at = grant.starts_at.astimezone(tz).replace(tzinfo=None)
@@ -416,19 +419,22 @@ class AbloyDriver(AccessControlDriver):
             else:
                 raise RemoteError("Unable to create PIN code for grant. Resource has not set access code type!")
 
-            # Try at most 20 times to generate an unused PIN,
-            # and if that fails, we probably have other problems. Upper layers
-            # will take care of retrying later in case the unlikely false positive
-            # happens.
-            i = 1
-            while i < 20:
-                # pin = get_random_string(1, '123456789') + get_random_string(5, '0123456789')
-                pin = get_random_string(pin_digits, '0123456789')
-                if not self.system.users.active().filter(identifier=pin).exists():
-                    break
-                i += 1
-            else:
-                raise RemoteError("Unable to find a PIN code for grant")
+            # try to find an unused PIN code to use before trying to generate a new code
+            pin = self.get_free_removed_access_code(pin_digits)
+
+            if not pin:
+                # Try at most 20 times to generate an unused PIN,
+                # and if that fails, we probably have other problems. Upper layers
+                # will take care of retrying later in case the unlikely false positive
+                # happens.
+                i = 1
+                while i < 20:
+                    pin = get_random_string(1, '123456789') + get_random_string(pin_digits-1, '0123456789')
+                    if not self.system.users.active().filter(identifier=pin).exists():
+                        break
+                    i += 1
+                else:
+                    raise RemoteError("Unable to find a PIN code for grant")
 
             user_attrs = dict(identifier=pin, first_name=first_name, last_name=last_name, user=user)
             user = self.system.users.create(**user_attrs)
@@ -436,20 +442,28 @@ class AbloyDriver(AccessControlDriver):
         print("created user with access code: " + str(user.identifier))
         return user
 
-    '''
-    # test with multiple reservations at the same time in abloy resources
-    # this is not needed if adding/replacing tokens/organizations works...
+    # Returns an already used/removed pin code that is currently not in use
+    def get_free_removed_access_code(self, pin_digits):
+        # Search for a unique removed code that is not in use now and return it
+        # Make sure the code has correct amount of digits
+        system_grants = AccessControlGrant.objects.filter(resource__system=self.system).distinct()
+        removed_state = AccessControlGrant.REMOVED
+        non_removed_states = (AccessControlGrant.INSTALLED,AccessControlGrant.INSTALLING,
+            AccessControlGrant.CANCELLED, AccessControlGrant.REMOVING)
 
-    def prepare_install_grant(self, grant):
-        grant.install_at = grant.starts_at - timedelta(hours=1)
-        grant.save(update_fields=['install_at'])
-    '''
+        removed_grant_codes = system_grants.filter(state__exact=removed_state).values('access_code').distinct()
+        non_removed_grant_codes = system_grants.filter(state__in=non_removed_states).values('access_code').distinct()
+        for code in removed_grant_codes:
+            if isinstance(code['access_code'], str) and len(code['access_code']) == pin_digits:
+                if not code in non_removed_grant_codes:
+                    return code['access_code']
+
+        return None
+
 
     # Removes grant token from person.
     def remove_token_from_person(self, tokens, token):
         # make a copy of tokens and return the new copy instead of modifying the given one
-        #print("removing token "+str(token))
-        #print("removing token... tokens: " + str(tokens))
         new_tokens = tokens.copy()
 
         for i in range(len(new_tokens)):
@@ -488,10 +502,11 @@ class AbloyDriver(AccessControlDriver):
 
         return new_list
 
-    # Converts pin code e.g. 1234 to hex "000004d2"
+    # Converts pin code e.g. 1234 to hex "000004D2"
     def convert_token_code_to_hex(self, token_code):
         hex_token = (int(token_code)).to_bytes(4, byteorder='big').hex()
-        return hex_token
+        # hex needs to be in upper case
+        return hex_token.upper()
 
     # Converts all person's pin codes to hex and returns new list
     # of tokens with converted pin codes.
@@ -539,12 +554,3 @@ class AbloyDriver(AccessControlDriver):
             return
         respa_resource.generate_access_codes = False
         respa_resource.save(update_fields=['generate_access_codes'])
-
-    # Override default remove grant to handle reservation access_code nulling
-    # to not leave old grant code hanging in the reservation
-    def prepare_remove_grant(self, grant):
-        grant.remove_at = timezone.now()
-        grant.save(update_fields=['remove_at'])
-        # remove reservation pin
-        grant.reservation.access_code = None
-        grant.reservation.save(update_fields=['access_code'])
