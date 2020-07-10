@@ -27,9 +27,7 @@ class AbloyToken:
     def has_expired(self):
         now = datetime.now()
         if now > self.expires_at + timedelta(seconds=30):
-            print("AbloyToken has_expired: Yup")
             return True
-        print("AbloyToken has_expired: nope")
         return False
 
     # refresh by getting a new access token and expiration time
@@ -46,7 +44,6 @@ class AbloyToken:
             access_token = data['access_token']
             expires_at = datetime.fromtimestamp(data['expires_at'])
         except Exception:
-            print("AbloyToken: couldnt deserialize data....")
             return None
         return AbloyToken(access_token=access_token, expires_at=expires_at)
 
@@ -127,7 +124,6 @@ class AbloyDriver(AccessControlDriver):
         return AbloyToken.deserialize(data)
 
     def api_get_token(self):
-        print("api_get_token....") # remove me
         body_username = self.get_setting('body_username')
         body_password = self.get_setting('body_password')
         header_username = self.get_setting('header_username')
@@ -152,7 +148,6 @@ class AbloyDriver(AccessControlDriver):
         expires_at = datetime.now() + timedelta(seconds=(response_data["expires_in"]))
         token = AbloyToken(access_token=access_token, expires_at=expires_at)
 
-        print("Token: %s" % token.access_token) # remove me
         return token
 
     @contextlib.contextmanager
@@ -161,7 +156,6 @@ class AbloyDriver(AccessControlDriver):
 
         token = self._load_token()
         if not token or token.has_expired():
-            # throw exception?
             token = self.api_get_token()
 
         self._save_token(token)
@@ -177,7 +171,6 @@ class AbloyDriver(AccessControlDriver):
         grant.save(update_fields=['install_at'])
 
     def install_grant(self, grant):
-        print('Installing Abloy grant: [%s]' % grant)
         assert grant.state == grant.INSTALLING
 
         user = self.create_access_user(grant)
@@ -205,9 +198,7 @@ class AbloyDriver(AccessControlDriver):
             "person": {
                 "firstname": grant.reservation.user.first_name,
                 "lastname": grant.reservation.user.last_name,
-                #"validityStart": str(starts_at),
                 "validityStart": None,
-                #"validityEnd": str(ends_at),
                 "validityEnd": None,
                 "ssn": str(grant.reservation.user.uuid)
             },
@@ -226,8 +217,6 @@ class AbloyDriver(AccessControlDriver):
             "roles": [
                 {
                     "name": grant.resource.driver_config.get("access_point_group_name"),
-                    #"validityStart": str(starts_at),
-                    #"validityEnd": str(ends_at),
                     "validities": role_validities
                 }
             ],
@@ -240,15 +229,12 @@ class AbloyDriver(AccessControlDriver):
             }
         }
 
-        #data.update()
-
         path = "api/v1/persons-setup"
         self.handle_api_post(data, path)
         grant.state = grant.INSTALLED
         grant.save()
 
     def remove_grant(self, grant):
-        print('Removing Abloy grant: [%s]' % grant)
         assert grant.state == grant.REMOVING
 
         tz = pytz.timezone('Europe/Helsinki')
@@ -270,14 +256,11 @@ class AbloyDriver(AccessControlDriver):
         person_roles = self.remove_role_from_person(person_roles,
             grant.resource.driver_config.get("access_point_group_name"), starts_at, ends_at)
 
-        # REMOVING VIA PERSON SETUP
         data = {
             "person": {
                 "firstname": grant.reservation.user.first_name,
                 "lastname": grant.reservation.user.last_name,
-                #"validityStart": str(starts_at), # only "2017-01-01 21:00" formatting?
                 "validityStart": None,
-                #"validityEnd": str(ends_at), # only "2017-01-01 21:00" formatting?
                 "validityEnd": None,
                 "ssn": str(grant.reservation.user.uuid)
             },
@@ -298,22 +281,8 @@ class AbloyDriver(AccessControlDriver):
         data.update({"roles": person_roles})
         data.update({"tokens": person_tokens})
 
-        #print("POST DATA: " + str(data))
-
         path = "api/v1/persons-setup"
 
-        '''
-        #REMOVING VIA DISABLE TOKEN
-        data = {
-            "surfaceMarking": "PIN-" + grant.reservation.access_code,
-            "code": grant.reservation.access_code,
-            "tokenType": "default",
-            "validityStart": str(starts_at),
-            "validityEnd": str(ends_at),
-        }
-
-        path = "api/v1/disable-token"
-        '''
         # send post to remove reservation data
         self.handle_api_post(data, path)
 
@@ -330,7 +299,6 @@ class AbloyDriver(AccessControlDriver):
 
     def handle_api_post(self, data, path):
         with self.ensure_token() as token:
-            print("handle_api_post.....") # remove me
             # build POST request
             url = '%s/%s' % (self.get_setting('api_url'), path)
             method = 'POST'
@@ -338,50 +306,8 @@ class AbloyDriver(AccessControlDriver):
             args = dict(headers=headers)
             args['json'] = data
 
-            print("args: " + str(args)) # remove me
-
             # send request and handle its response
             resp = requests.request(method, url, timeout=REQUESTS_TIMEOUT, **args)
-            print("resp status code: "+str(resp.status_code)) # remove me
-
-            if resp.status_code not in (200, 201, 204):
-                if resp.content:
-                    try:
-                        data = resp.json()
-                        err_code = data.get('error')
-                        err_str = data.get('message')
-                    except Exception:
-                        err_code = ''
-                        err_str = ''
-                    status_code = resp.status_code
-                    # self.logger.error(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                    # print(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                    raise Exception(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                # raise Exception("Grant API POST failed!")
-
-            if not resp.content:
-                print("resp no content?")
-            else:
-                print("resp json: " + str(resp.json()))
-
-    # Handles getting given person's data and returns the data json
-    # if person exists, otherwise returns None
-    def handle_api_get_person(self, data):
-        with self.ensure_token() as token:
-            print("handle_api_get_person.....") # remove me
-            # build GET request
-            path = "api/v1/persons"
-            url = '%s/%s' % (self.get_setting('api_url'), path)
-            method = 'GET'
-            headers = {"Accept": "application/json", "Authorization": "Bearer "+ token.access_token,}
-            args = dict(headers=headers)
-            args['params'] = data
-
-            print("args: " + str(args)) # remove me
-
-            # send request and handle its response
-            resp = requests.request(method, url, timeout=REQUESTS_TIMEOUT, **args)
-            print("resp status code: "+str(resp.status_code)) # remove me
 
             if resp.status_code not in (200, 201, 204):
                 if resp.content:
@@ -394,14 +320,43 @@ class AbloyDriver(AccessControlDriver):
                         err_str = ''
                     status_code = resp.status_code
                     self.logger.error(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                    print(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}") # remove me
                     raise Exception(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                # raise Exception("Grant API POST failed!")
+
+            if not resp.content:
+                self.logger.error(f"api response is missing content")
+
+    # Handles getting given person's data and returns the data json
+    # if person exists, otherwise returns None
+    def handle_api_get_person(self, data):
+        with self.ensure_token() as token:
+            # build GET request
+            path = "api/v1/persons"
+            url = '%s/%s' % (self.get_setting('api_url'), path)
+            method = 'GET'
+            headers = {"Accept": "application/json", "Authorization": "Bearer "+ token.access_token,}
+            args = dict(headers=headers)
+            args['params'] = data
+
+            # send request and handle its response
+            resp = requests.request(method, url, timeout=REQUESTS_TIMEOUT, **args)
+
+            # allow 404 because new user is created when user is not found
+            if resp.status_code not in (200, 201, 204, 404):
+                if resp.content:
+                    try:
+                        data = resp.json()
+                        err_code = data.get('error')
+                        err_str = data.get('message')
+                    except Exception:
+                        err_code = ''
+                        err_str = ''
+                    status_code = resp.status_code
+                    self.logger.error(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
+                    raise Exception(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
 
             if not resp.content:
                 return None
             else:
-                print("resp json: " + str(resp.json())) # remove me
                 return resp.json()
 
 
@@ -444,7 +399,6 @@ class AbloyDriver(AccessControlDriver):
             user_attrs = dict(identifier=pin, first_name=first_name, last_name=last_name, user=user)
             user = self.system.users.create(**user_attrs)
 
-        print("created user with access code: " + str(user.identifier))
         return user
 
     # Returns an already used/removed pin code that is currently not in use
