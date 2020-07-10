@@ -4,6 +4,7 @@ db.sqlite3
 *.mo
 *.sqlite
 media/
+static/
 .django_secret
 ./local_settings.py
 /venv*
@@ -25,3 +26,5 @@ scripts/
 pyvenv*
 .pytest_cache
 pytest_cache
+env*
+static/*

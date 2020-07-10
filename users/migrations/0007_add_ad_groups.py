@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tkusers', '0001_add_ad_groups'),
+        ('helusers', '0001_add_ad_groups'),
         ('users', '0006_auto_20161110_1046'),
     ]
 
@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='ad_groups',
-            field=models.ManyToManyField(blank=True, to='tkusers.TurkuADGroup'),
+            field=models.ManyToManyField(blank=True, to='helusers.ADGroup'),
         ),
     ]

@@ -18,7 +18,7 @@ from resources.models import (Period, Day, Reservation, Resource, ResourceGroup,
                               ReservationMetadataSet, UnitAuthorization)
 from notifications.models import NotificationTemplate, NotificationType
 from notifications.tests.utils import check_received_mail_exists
-from .utils import check_disallowed_methods, assert_non_field_errors_contain, assert_response_objects
+from .utils import check_disallowed_methods, assert_non_field_errors_contain, assert_response_objects, MAX_QUERIES
 
 
 DEFAULT_RESERVATION_EXTRA_FIELDS = ('reserver_name', 'reserver_phone_number', 'reserver_address_street',
@@ -2045,7 +2045,313 @@ def test_reservation_cannot_add_bogus_type(resource_in_unit, reservation_data, a
 
 
 @pytest.mark.django_db
-def test_include_resource_detail(api_client, resource_in_unit, reservation, list_url):
-    response = api_client.get(list_url + '?include=resource_detail')
+def test_manager_can_make_reservations(
+    resource_in_unit,
+    resource_in_unit2,
+    api_client, unit_manager_user,
+    reservation_data,
+    list_url
+):
+    # unit_manager_user is manager of resource_in_unit
+    resource_in_unit.reservable = False
+    resource_in_unit.save()
+    api_client.force_authenticate(user=unit_manager_user)
+    response = api_client.post(list_url, data=reservation_data)
+    assert response.status_code == 201
+
+    # unit_manager_user is NOT manager of resource_in_unit2
+    resource_in_unit2.reservable = False
+    resource_in_unit2.save()
+    reservation_data['resource'] = resource_in_unit2.pk
+    response = api_client.post(list_url, data=reservation_data)
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_manager_can_modify_reservations(resource_in_unit, resource_in_unit2, api_client, unit_manager_user, reservation_data, list_url, detail_url):
+    # unit_manager_user is manager of resource_in_unit (resource of reservation_data)
+    api_client.force_authenticate(user=unit_manager_user)
+    response = api_client.put(detail_url, data=reservation_data)
     assert response.status_code == 200
-    assert response.json()['results'][0]['resource']['name']['fi'] == resource_in_unit.name
+
+    # unit_manager_user is NOT manager of resource_in_unit2
+    reservation_data['resource'] = resource_in_unit2.pk
+    response = api_client.put(detail_url, data=reservation_data)
+    assert response.status_code == 400
+
+
+@freeze_time('2115-04-02')
+@pytest.mark.django_db
+def test_manager_can_ignore_opening_hours(api_client, list_url, reservation_data, unit_manager_user, user):
+    # regular user should not be aple to ignore opening hours
+    api_client.force_authenticate(user=user)
+    reservation_data['begin'] = '2115-04-04T06:00:00+02:00'
+    reservation_data['end'] = '2115-04-04T08:00:00+02:00'
+    response = api_client.post(list_url, data=reservation_data, HTTP_ACCEPT_LANGUAGE='en')
+    assert response.status_code == 400
+
+    api_client.force_authenticate(user=unit_manager_user)
+    reservation_data['begin'] = '2115-04-04T06:00:00+02:00'
+    reservation_data['end'] = '2115-04-04T08:00:00+02:00'
+    response = api_client.post(list_url, data=reservation_data, HTTP_ACCEPT_LANGUAGE='en')
+    assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_manager_can_view_reservation_access_code(api_client, resource_in_unit, reservation, unit_manager_user):
+    resource_in_unit.access_code_type = Resource.ACCESS_CODE_TYPE_PIN6
+    resource_in_unit.save()
+    reservation.access_code = '123456'
+    reservation.save()
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+
+    api_client.force_authenticate(user=unit_manager_user)
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    assert response.data['access_code'] == '123456'
+
+
+@pytest.mark.django_db
+def test_manager_can_view_reservation_extra_fields(api_client, resource_in_unit, reservation, unit_manager_user):
+    resource_in_unit.reservation_metadata_set = ReservationMetadataSet.objects.get(name='default')
+    resource_in_unit.save()
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+    api_client.force_authenticate(user=unit_manager_user)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    for field_name in DEFAULT_RESERVATION_EXTRA_FIELDS:
+        assert (field_name in response.data) is True
+
+
+@pytest.mark.django_db
+def test_manager_can_access_reservation_comments(api_client, resource_in_unit, reservation, unit_manager_user):
+    reservation.comments = 'To be a foo or not to be a foo, that is the question'
+    reservation.save()
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+    api_client.force_authenticate(user=unit_manager_user)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    assert response.data['comments'] == 'To be a foo or not to be a foo, that is the question'
+
+
+@pytest.mark.django_db
+def test_manager_can_view_reservation_catering_orders(api_client, reservation, unit_manager_user):
+    provider = CateringProvider.objects.create(
+        name='Ihan Hyva Catering Oy',
+        price_list_url_fi='www.ihanhyva.foobar/hinnasto/',
+    )
+    CateringOrder.objects.create(
+        reservation=reservation,
+        provider=provider
+    )
+
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+    api_client.force_authenticate(user=unit_manager_user)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    assert response.data['has_catering_order'] == True
+
+
+@pytest.mark.django_db
+def test_viewer_can_view_reservation_access_code(api_client, reservation, unit_viewer_user, resource_in_unit):
+    resource_in_unit.access_code_type = Resource.ACCESS_CODE_TYPE_PIN6
+    resource_in_unit.save()
+    reservation.access_code = '123456'
+    reservation.save()
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+
+    api_client.force_authenticate(user=unit_viewer_user)
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    assert response.data['access_code'] == '123456'
+
+
+@pytest.mark.django_db
+def test_viewer_can_view_reservation_extra_fields(api_client, resource_in_unit, reservation, unit_viewer_user):
+    resource_in_unit.reservation_metadata_set = ReservationMetadataSet.objects.get(name='default')
+    resource_in_unit.save()
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+    api_client.force_authenticate(user=unit_viewer_user)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    for field_name in DEFAULT_RESERVATION_EXTRA_FIELDS:
+        assert (field_name in response.data) is True
+
+
+@pytest.mark.django_db
+def test_viewer_can_access_reservation_comments(api_client, reservation, unit_viewer_user):
+    reservation.comments = 'To be a foo or not to be a foo, that is the question'
+    reservation.save()
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+    api_client.force_authenticate(user=unit_viewer_user)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    assert response.data['comments'] == 'To be a foo or not to be a foo, that is the question'
+
+
+@pytest.mark.django_db
+def test_viewer_can_view_reservation_user(api_client, reservation, unit_viewer_user, user):
+    detail_url = reverse('reservation-detail', kwargs={'pk': reservation.pk})
+    api_client.force_authenticate(user=unit_viewer_user)
+
+    response = api_client.get(detail_url)
+    assert response.status_code == 200
+    assert response.data['user']['email'] == user.email
+
+@pytest.mark.django_db
+def test_viewer_can_modify_reservations(resource_in_unit, resource_in_unit2, api_client, unit_viewer_user, reservation_data, detail_url):
+    # unit_viewer_user is viewer of resource_in_unit (resource of reservation_data)
+    api_client.force_authenticate(user=unit_viewer_user)
+    response = api_client.put(detail_url, data=reservation_data)
+    assert response.status_code == 200
+
+    # unit_viewer_user is NOT viewer of resource_in_unit2
+    reservation_data['resource'] = resource_in_unit2.pk
+    response = api_client.put(detail_url, data=reservation_data)
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_viewer_can_comment_reservations(resource_in_unit, api_client, unit_viewer_user, reservation_data, detail_url):
+    api_client.force_authenticate(user=unit_viewer_user)
+    reservation_data['comments'] = 'test comment'
+    response = api_client.put(detail_url, data=reservation_data)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_admin_can_make_staff_reservation(
+        resource_in_unit, list_url, reservation_data, unit_admin_user, api_client):
+    """
+    User with admin status on the resource should be able to make staff event reservations.
+    """
+    reservation_data['staff_event'] = True
+    reservation_data['reserver_name'] = 'herra huu'
+    reservation_data['event_description'] = 'herra huun bileet'
+
+    api_client.force_authenticate(user=unit_admin_user)
+    response = api_client.post(list_url, data=reservation_data)
+    assert response.status_code == 201, "Request failed with: %s" % (str(response.content, 'utf8'))
+    assert response.data.get('staff_event', False) is True
+    reservation = Reservation.objects.get(id=response.data['id'])
+    assert reservation.staff_event is True
+
+
+@pytest.mark.django_db
+def test_admin_can_create_special_type_reservation(
+        resource_in_unit, list_url, reservation_data, unit_admin_user, api_client):
+    """
+    User with admin status on the resource should be able to make special type reservations.
+    """
+    reservation_data['type'] = Reservation.TYPE_BLOCKED
+
+    api_client.force_authenticate(user=unit_admin_user)
+    response = api_client.post(list_url, data=reservation_data)
+
+    assert response.status_code == 201
+    reservation = Reservation.objects.get(id=response.data['id'])
+    assert reservation.type == Reservation.TYPE_BLOCKED
+
+
+@pytest.mark.django_db
+def test_manager_can_create_special_type_reservation(
+        resource_in_unit, list_url, reservation_data, unit_manager_user, api_client):
+    """
+    User with manager status on the resource should be able to make special type reservations.
+    """
+    reservation_data['type'] = Reservation.TYPE_BLOCKED
+
+    api_client.force_authenticate(user=unit_manager_user)
+    response = api_client.post(list_url, data=reservation_data)
+
+    assert response.status_code == 201
+    reservation = Reservation.objects.get(id=response.data['id'])
+    assert reservation.type == Reservation.TYPE_BLOCKED
+
+
+@pytest.mark.django_db
+def test_admin_can_bypass_manual_confirmation(
+        resource_in_unit, list_url, reservation_data, unit_admin_user, api_client):
+    """
+    User with admin status on the resource should be able to bypass manual confirmation.
+    """
+
+    resource_in_unit.need_manual_confirmation = True
+    resource_in_unit.save()
+
+    api_client.force_authenticate(user=unit_admin_user)
+    response = api_client.post(list_url, data=reservation_data)
+
+    assert response.status_code == 201
+    reservation = Reservation.objects.get(id=response.data['id'])
+    assert reservation.state != Reservation.REQUESTED
+
+
+@pytest.mark.django_db
+def test_manager_can_bypass_manual_confirmation(
+        resource_in_unit, list_url, reservation_data, unit_manager_user, api_client):
+    """
+    User with manager status on the resource should be able to bypass manual confirmation.
+    """
+
+    resource_in_unit.need_manual_confirmation = True
+    resource_in_unit.save()
+
+    api_client.force_authenticate(user=unit_manager_user)
+    response = api_client.post(list_url, data=reservation_data)
+
+    assert response.status_code == 201
+    reservation = Reservation.objects.get(id=response.data['id'])
+    assert reservation.state != Reservation.REQUESTED
+
+
+@pytest.mark.django_db
+def test_query_counts(user_api_client, staff_api_client, list_url, django_assert_max_num_queries):
+    """
+    Test that DB query count is less than allowed
+    """
+    with django_assert_max_num_queries(MAX_QUERIES):
+        user_api_client.get(list_url)
+
+    with django_assert_max_num_queries(MAX_QUERIES):
+        staff_api_client.get(list_url)
+
+
+@pytest.mark.django_db
+def test_admin_may_bypass_min_period(resource_in_unit, user, user_api_client, list_url):
+    # min_period is bypassed respecting slot_size restriction
+    resource_in_unit.min_period = datetime.timedelta(hours=1)
+    resource_in_unit.slot_size = datetime.timedelta(minutes=30)
+    resource_in_unit.save()
+
+    UnitAuthorization.objects.create(
+        subject=resource_in_unit.unit,
+        level=UnitAuthorizationLevel.admin,
+        authorized=user,
+    )
+
+    tz = timezone.get_current_timezone()
+    begin = tz.localize(datetime.datetime(2115, 6, 1, 8, 0, 0))
+    end = begin + datetime.timedelta(hours=0, minutes=30)
+
+    reservation_data = {
+        'resource': resource_in_unit.pk,
+        'begin': begin,
+        'end': end,
+    }
+
+    response = user_api_client.post(list_url, reservation_data)
+    assert response.status_code == 201
+    Reservation.objects.all().delete()
+
+    # min_period is bypassed and slot_size restriction is violated
+    resource_in_unit.slot_size = datetime.timedelta(minutes=25)
+    resource_in_unit.save()
+
+    response = user_api_client.post(list_url, reservation_data)
+    assert response.status_code == 400

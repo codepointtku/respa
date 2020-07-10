@@ -24,10 +24,12 @@ from resources.admin.period_inline import PeriodInline
 
 from ..models import (
     AccessibilityValue, AccessibilityViewpoint, Day, Equipment, EquipmentAlias, EquipmentCategory, Purpose,
-    Reservation, ReservationBulk, ReservationReminder, ReservationMetadataField, ReservationMetadataSet, Resource, ResourceAccessibility,
+    Reservation, ReservationBulk, ReservationReminder, ReservationMetadataField, ReservationMetadataSet,
+    ReservationHomeMunicipalityField, ReservationHomeMunicipalitySet, Resource, ResourceAccessibility,
     ResourceEquipment, ResourceGroup, ResourceImage, ResourceType, TermsOfUse,
     Unit, UnitAuthorization, UnitIdentifier, UnitGroup, UnitGroupAuthorization)
 from munigeo.models import Municipality
+from rest_framework.authtoken.admin import Token
 
 logger = logging.getLogger(__name__)
 
@@ -246,6 +248,7 @@ class PurposeAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin, Translat
 
 
 class TermsOfUseAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin, TranslationAdmin):
+    list_display = ['name', 'terms_type']
     pass
 
 
@@ -266,6 +269,17 @@ class ReservationMetadataSetAdmin(PopulateCreatedAndModifiedMixin, admin.ModelAd
     exclude = CommonExcludeMixin.exclude + ('id',)
     form = ReservationMetadataSetForm
 
+class ReservationHomeMunicipalityFieldAdmin(CommonExcludeMixin, TranslationAdmin):
+    pass
+
+class ReservationHomeMunicipalitySetForm(forms.ModelForm):
+    class Meta:
+        model = ReservationHomeMunicipalitySet
+        exclude = CommonExcludeMixin.exclude + ('id',)
+
+class ReservationHomeMunicipalitySetAdmin(PopulateCreatedAndModifiedMixin, admin.ModelAdmin):
+    exclude = CommonExcludeMixin.exclude + ('id',)
+    form = ReservationHomeMunicipalitySetForm
 
 class ResourceGroupAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin, FixedGuardedModelAdminMixin,
                          admin.ModelAdmin):
@@ -371,6 +385,33 @@ class ReservationBulkAdmin(admin.ModelAdmin):
 class ReservationReminderAdmin(admin.ModelAdmin):
     extra_readonly_fields_on_update = ('reservation_type',)
 
+# Override TokenAdmin of django rest framework
+# to use raw_id_field on user
+class RespaTokenAdmin(admin.ModelAdmin):
+    list_display = ('key', 'user', 'created')
+    fields = ('user',)
+    ordering = ('-created',)
+    raw_id_fields = ('user',)
+
+
+# Override TokenAdmin of django rest framework
+# to use raw_id_field on user
+class RespaTokenAdmin(admin.ModelAdmin):
+    list_display = ('key', 'user', 'created')
+    fields = ('user',)
+    ordering = ('-created',)
+    raw_id_fields = ('user',)
+
+
+# Override TokenAdmin of django rest framework
+# to use raw_id_field on user
+class RespaTokenAdmin(admin.ModelAdmin):
+    list_display = ('key', 'user', 'created')
+    fields = ('user',)
+    ordering = ('-created',)
+    raw_id_fields = ('user',)
+
+
 admin_site.register(ResourceImage, ResourceImageAdmin)
 admin_site.register(Resource, ResourceAdmin)
 admin_site.register(Reservation, ReservationAdmin)
@@ -386,6 +427,8 @@ admin_site.register(ReservationMetadataField, ReservationMetadataFieldAdmin)
 admin.site.register(ReservationBulk, ReservationBulkAdmin)
 admin.site.register(ReservationReminder, ReservationReminderAdmin)
 admin_site.register(ReservationMetadataSet, ReservationMetadataSetAdmin)
+admin_site.register(ReservationHomeMunicipalityField, ReservationHomeMunicipalityFieldAdmin)
+admin_site.register(ReservationHomeMunicipalitySet, ReservationHomeMunicipalitySetAdmin)
 admin.site.register(ResourceGroup, ResourceGroupAdmin)
 if admin.site.is_registered(Municipality):
     admin.site.unregister(Municipality)
@@ -393,3 +436,7 @@ admin.site.register(Municipality, MunicipalityAdmin)
 admin.site.register(AccessibilityViewpoint, AccessibilityViewpointAdmin)
 admin.site.register(AccessibilityValue)
 admin.site.register(ResourceAccessibility, ResourceAccessibilityAdmin)
+
+if admin.site.is_registered(Token):
+    admin.site.unregister(Token)
+admin_site.register(Token, RespaTokenAdmin)

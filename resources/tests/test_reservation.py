@@ -8,7 +8,19 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 
-from resources.models import *
+from resources.enums import UnitAuthorizationLevel
+from resources.models import (
+    Day,
+    Period,
+    Reservation,
+    ReservationMetadataSet,
+    Resource,
+    ResourceType,
+    Unit,
+    UnitAuthorization,
+    ReservationHomeMunicipalityField,
+    ReservationHomeMunicipalitySet,
+)
 
 
 class ReservationTestCase(TestCase):
@@ -125,7 +137,7 @@ def test_valid_reservation_duration_with_slot_size(resource_with_opening_hours):
 @pytest.mark.django_db
 def test_invalid_reservation_duration_with_slot_size(resource_with_opening_hours):
     activate('en')
-    
+
     resource_with_opening_hours.min_period = datetime.timedelta(hours=1)
     resource_with_opening_hours.slot_size = datetime.timedelta(minutes=30)
     resource_with_opening_hours.save()
@@ -139,3 +151,49 @@ def test_invalid_reservation_duration_with_slot_size(resource_with_opening_hours
     with pytest.raises(ValidationError) as error:
         reservation.clean()
     assert error.value.code == 'invalid_time_slot'
+
+
+@freeze_time('2115-04-02')
+@pytest.mark.django_db
+def test_admin_may_bypass_min_period(resource_with_opening_hours, user):
+    """
+    Admin users should be able to bypass min_period,
+    and their minimum reservation time should be limited by slot_size
+    """
+    activate('en')
+
+    # min_period is bypassed respecting slot_size restriction
+    resource_with_opening_hours.min_period = datetime.timedelta(hours=1)
+    resource_with_opening_hours.slot_size = datetime.timedelta(minutes=30)
+    resource_with_opening_hours.save()
+
+    tz = timezone.get_current_timezone()
+    begin = tz.localize(datetime.datetime(2115, 6, 1, 8, 0, 0))
+    end = begin + datetime.timedelta(hours=0, minutes=30)
+
+    UnitAuthorization.objects.create(
+        subject=resource_with_opening_hours.unit,
+        level=UnitAuthorizationLevel.admin,
+        authorized=user,
+    )
+
+    reservation = Reservation(resource=resource_with_opening_hours, begin=begin, end=end, user=user)
+    reservation.clean()
+
+    # min_period is bypassed and slot_size restriction is violated
+    resource_with_opening_hours.slot_size = datetime.timedelta(minutes=25)
+    resource_with_opening_hours.save()
+
+    with pytest.raises(ValidationError) as error:
+        reservation.clean()
+    assert error.value.code == 'invalid_time_slot'
+
+@pytest.mark.django_db
+def test_reservation_home_municipality_field_str():
+        home_municipality_field = ReservationHomeMunicipalityField.objects.create(name='test municipality')
+        assert str(home_municipality_field) == 'test municipality'
+
+@pytest.mark.django_db
+def test_reservation_home_municipality_set_str():
+        home_municipality_set = ReservationHomeMunicipalitySet.objects.create(name='test municipality set')
+        assert str(home_municipality_set) == 'test municipality set'

@@ -27,6 +27,7 @@ export function initializeEventHandlers() {
   enableLanguageButtons();
   enableAddNewImage();
   enableRemoveImage();
+  showSearchTagInput();
 }
 
 export function getEmptyImage() {
@@ -141,4 +142,31 @@ export function coloredDropdownListener(event) {
   let reservableDropdown = document.getElementById('id_reservable');
   publicDropdown.addEventListener('change', addDropdownColor, false);
   reservableDropdown.addEventListener('change', addDropdownColor, false);
+}
+
+export function showSearchTagInput() {
+  let newValue = []
+  let tagInput = $(document.getElementById('id_tags'));
+  $($(tagInput).val().split(',')).each((index, tag) => {
+    let parsed = parseTag(tag);
+    if (parsed) {
+      newValue.push(
+        parsed
+      )
+    }
+  });
+  $(tagInput).val('');
+
+  if (newValue.length > 0) {
+    $(tagInput).attr('type', 'text').val(newValue.join(', '));
+  }
+}
+
+function parseTag(str) {
+  let tag = $.trim(str)
+             .replace(/[^\w\s]/gi, '')
+             .match(/^Tag (.*)/);
+  if (tag)
+    return tag[1]
+  return null;
 }

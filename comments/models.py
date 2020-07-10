@@ -28,9 +28,9 @@ if getattr(settings, 'RESPA_CATERINGS_ENABLED', False):
 
 def get_commentable_content_types():
     return ContentType.objects.get_for_models(*COMMENTABLE_MODELS.values()).values()
-
-def limit_choices():
-    return  {'id__in': (ct.id for ct in get_commentable_content_types())}
+    
+def get_content_type_choices():
+    return {'id__in': (ct.id for ct in get_commentable_content_types())}
 
 
 class CommentQuerySet(models.QuerySet):
@@ -67,7 +67,7 @@ class Comment(models.Model):
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
-        limit_choices_to=limit_choices
+        limit_choices_to=get_content_type_choices
     )
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -102,7 +102,7 @@ class Comment(models.Model):
         elif target_model == CateringOrder:
             if user == target_object.reservation.user:
                 return True
-            if target_object.reservation.resource.can_view_catering_orders(user):
+            if target_object.reservation.resource.can_view_reservation_catering_orders(user):
                 return True
         return False
 
@@ -174,3 +174,4 @@ class Comment(models.Model):
 
     def send_created_notification(self, request=None):
         self._send_notification(request)
+

@@ -268,5 +268,5 @@ def dateparser(first, iter) -> str:
         time = time.split('+')[0]
         time = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
         return time
-    except Exception as ex:
-        print(ex)
+    except:
+        return ""

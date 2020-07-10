@@ -31,7 +31,11 @@ from PIL import Image
 from guardian.shortcuts import get_objects_for_user, get_users_with_perms
 from guardian.core import ObjectPermissionChecker
 
-from ..auth import is_authenticated_user, is_general_admin, is_underage, is_overage
+
+from taggit.managers import TaggableManager
+from taggit.models import CommonGenericTaggedItemBase, TaggedItemBase
+
+from ..auth import is_authenticated_user, is_general_admin, is_superuser, is_underage, is_overage
 from ..errors import InvalidImage
 from ..fields import EquipmentField
 from .accessibility import AccessibilityValue, AccessibilityViewpoint, ResourceAccessibility
@@ -40,7 +44,8 @@ from .utils import create_datetime_days_from_now, get_translated, get_translated
 from .equipment import Equipment
 from .unit import Unit
 from .availability import get_opening_hours
-from .permissions import RESOURCE_GROUP_PERMISSIONS
+from .permissions import RESOURCE_GROUP_PERMISSIONS, UNIT_ROLE_PERMISSIONS
+from ..enums import UnitAuthorizationLevel, UnitGroupAuthorizationLevel
 
 
 def generate_access_code(access_code_type):
@@ -119,9 +124,18 @@ class Purpose(ModifiableModel, NameIdentifiedModel):
 
 
 class TermsOfUse(ModifiableModel, AutoIdentifiedModel):
+    TERMS_TYPE_PAYMENT = 'payment_terms'
+    TERMS_TYPE_GENERIC = 'generic_terms'
+
+    TERMS_TYPES = (
+        (TERMS_TYPE_PAYMENT, _('Payment terms')),
+        (TERMS_TYPE_GENERIC, _('Generic terms'))
+    )
+
     id = models.CharField(primary_key=True, max_length=100)
     name = models.CharField(verbose_name=_('Name'), max_length=200)
     text = models.TextField(verbose_name=_('Text'))
+    terms_type = models.CharField(blank=False, verbose_name=_('Terms type'), max_length=40, choices=TERMS_TYPES, default=TERMS_TYPE_GENERIC)
 
     class Meta:
         verbose_name = pgettext_lazy('singular', 'terms of use')
@@ -154,11 +168,20 @@ class ResourceQuerySet(models.QuerySet):
                                      with_superuser=False)
         resource_groups = get_objects_for_user(user, 'group:%s' % perm, klass=ResourceGroup,
                                                with_superuser=False)
-        return self.filter(Q(unit__in=units) | Q(groups__in=resource_groups)).distinct()
+
+        allowed_roles = UNIT_ROLE_PERMISSIONS.get(perm)
+        units_where_role = Unit.objects.by_roles(user, allowed_roles)
+
+        return self.filter(Q(unit__in=list(units) + list(units_where_role)) | Q(groups__in=resource_groups)).distinct()
+
+
+class CleanResourceID(CommonGenericTaggedItemBase, TaggedItemBase):
+    object_id = models.CharField(max_length=100, verbose_name=_('Object id'), db_index=True)
 
 
 class Resource(ModifiableModel, AutoIdentifiedModel):
     AUTHENTICATION_TYPES = (
+        ('unauthenticated', _('Unauthenticated')),
         ('none', _('None')),
         ('weak', _('Weak')),
         ('strong', _('Strong'))
@@ -180,6 +203,9 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
     purposes = models.ManyToManyField(Purpose, verbose_name=_('Purposes'))
     name = models.CharField(verbose_name=_('Name'), max_length=200)
     description = models.TextField(verbose_name=_('Description'), null=True, blank=True)
+
+    tags = TaggableManager(through=CleanResourceID, blank=True)
+
     min_age = models.PositiveIntegerField(verbose_name=_('Age restriction (min)'), null=True, blank=True, default=0)
     max_age = models.PositiveIntegerField(verbose_name=_('Age restriction (max)'), null=True, blank=True, default=0)
     need_manual_confirmation = models.BooleanField(verbose_name=_('Need manual confirmation'), default=False)
@@ -210,7 +236,9 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
     reservation_info = models.TextField(verbose_name=_('Reservation info'), null=True, blank=True)
     responsible_contact_info = models.TextField(verbose_name=_('Responsible contact info'), blank=True)
     generic_terms = models.ForeignKey(TermsOfUse, verbose_name=_('Generic terms'), null=True, blank=True,
-                                      on_delete=models.SET_NULL)
+                                      on_delete=models.SET_NULL, related_name='resources_where_generic_terms')
+    payment_terms = models.ForeignKey(TermsOfUse, verbose_name=_('Payment terms'), null=True, blank=True,
+                                      on_delete=models.SET_NULL, related_name='resources_where_payment_terms')
     specific_terms = models.TextField(verbose_name=_('Specific terms'), blank=True)
     reservation_requested_notification_extra = models.TextField(verbose_name=_(
         'Extra content to "reservation requested" notification'), blank=True)
@@ -242,10 +270,18 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
         'resources.ReservationMetadataSet', verbose_name=_('Reservation metadata set'),
         null=True, blank=True, on_delete=models.SET_NULL
     )
+    reservation_home_municipality_set = models.ForeignKey(
+        'resources.ReservationHomeMunicipalitySet', verbose_name=_('Reservation home municipality set'),
+        null=True, blank=True, on_delete=models.SET_NULL, related_name='home_municipality_included_set'
+    )
     external_reservation_url = models.URLField(
         verbose_name=_('External reservation URL'),
         help_text=_('A link to an external reservation system if this resource is managed elsewhere'),
         null=True, blank=True)
+
+    resource_email = models.EmailField(verbose_name='Email for Outlook', null=True, blank=True)
+    configuration = models.ForeignKey('respa_outlook.RespaOutlookConfiguration', verbose_name=_('Outlook configuration'),
+        null=True, blank=True, on_delete=models.SET_NULL, related_name='Configuration')
 
     objects = ResourceQuerySet.as_manager()
 
@@ -311,10 +347,10 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
         if begin.date() != end.date():
             raise ValidationError(_("You cannot make a multi day reservation"))
 
-        opening_hours = self.get_opening_hours(begin.date(), end.date())
-        days = opening_hours.get(begin.date(), None)
-        if days is None or not any(day['opens'] and begin >= day['opens'] and end <= day['closes'] for day in days):
-            if not self._has_perm(user, 'can_ignore_opening_hours'):
+        if not self.can_ignore_opening_hours(user):
+            opening_hours = self.get_opening_hours(begin.date(), end.date())
+            days = opening_hours.get(begin.date(), None)
+            if days is None or not any(day['opens'] and begin >= day['opens'] and end <= day['closes'] for day in days):
                 raise ValidationError(_("You must start and end the reservation during opening hours"))
 
         if self.max_period and (end - begin) > self.max_period:
@@ -544,14 +580,25 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
         :rtype: bool
         """
         if not self.unit:
-            return is_general_admin(user)
+            return False
         return self.unit.is_manager(user)
+
+    def is_viewer(self, user):
+        """
+        Check if the given user is a viewer of this resource.
+
+        :type user: users.models.User
+        :rtype: bool
+        """
+        if not self.unit:
+            return False
+        return self.unit.is_viewer(user)
 
     def _has_perm(self, user, perm, allow_admin=True):
         if not is_authenticated_user(user):
             return False
-        # Admins are almighty.
-        if self.is_admin(user) and allow_admin:
+
+        if (self.is_admin(user) and allow_admin) or user.is_superuser:
             return True
 
         if self.min_age and is_underage(user, self.min_age):
@@ -560,6 +607,9 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
         if self.max_age and is_overage(user, self.max_age):
             return False
 
+        return self._has_role_perm(user, perm) or self._has_explicit_perm(user, perm, allow_admin)
+
+    def _has_explicit_perm(self, user, perm, allow_admin=True):
         if hasattr(self, '_permission_checker'):
             checker = self._permission_checker
         else:
@@ -571,6 +621,22 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
         # ... or through Resource Groups
         resource_group_perms = [checker.has_perm('group:%s' % perm, rg) for rg in self.groups.all()]
         return any(resource_group_perms)
+
+    def _has_role_perm(self, user, perm):
+        allowed_roles = UNIT_ROLE_PERMISSIONS.get(perm)
+        is_allowed = False
+
+        if (UnitAuthorizationLevel.admin in allowed_roles
+            or UnitGroupAuthorizationLevel.admin in allowed_roles) and not is_allowed:
+            is_allowed = self.is_admin(user)
+
+        if UnitAuthorizationLevel.manager in allowed_roles and not is_allowed:
+            is_allowed = self.is_manager(user)
+
+        if UnitAuthorizationLevel.viewer in allowed_roles and not is_allowed:
+            is_allowed = self.is_viewer(user)
+
+        return is_allowed
 
     def get_users_with_perm(self, perm):
         users = {u for u in get_users_with_perms(self.unit) if u.has_perm('unit:%s' % perm, self.unit)}
@@ -589,22 +655,28 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
     def can_modify_reservations(self, user):
         return self._has_perm(user, 'can_modify_reservations')
 
+    def can_comment_reservations(self, user):
+        return self._has_perm(user, 'can_comment_reservations')
+
     def can_ignore_opening_hours(self, user):
         return self._has_perm(user, 'can_ignore_opening_hours')
 
     def can_view_reservation_extra_fields(self, user):
         return self._has_perm(user, 'can_view_reservation_extra_fields')
 
+    def can_view_reservation_user(self, user):
+        return self._has_perm(user, 'can_view_reservation_user')
+
     def can_access_reservation_comments(self, user):
         return self._has_perm(user, 'can_access_reservation_comments')
 
-    def can_view_catering_orders(self, user):
+    def can_view_reservation_catering_orders(self, user):
         return self._has_perm(user, 'can_view_reservation_catering_orders')
 
-    def can_modify_catering_orders(self, user):
+    def can_modify_reservation_catering_orders(self, user):
         return self._has_perm(user, 'can_modify_reservation_catering_orders')
 
-    def can_view_product_orders(self, user):
+    def can_view_reservation_product_orders(self, user):
         return self._has_perm(user, 'can_view_reservation_product_orders', allow_admin=False)
 
     def can_modify_paid_reservations(self, user):
@@ -613,8 +685,23 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
     def can_approve_reservations(self, user):
         return self._has_perm(user, 'can_approve_reservation', allow_admin=False)
 
-    def can_view_access_codes(self, user):
+    def can_view_reservation_access_code(self, user):
         return self._has_perm(user, 'can_view_reservation_access_code')
+
+    def can_bypass_payment(self, user):
+        return self._has_perm(user, 'can_bypass_payment')
+
+    def can_create_staff_event(self, user):
+        return self._has_perm(user, 'can_create_staff_event')
+
+    def can_create_special_type_reservation(self, user):
+        return self._has_perm(user, 'can_create_special_type_reservation')
+
+    def can_bypass_manual_confirmation(self, user):
+        return self._has_perm(user, 'can_bypass_manual_confirmation')
+
+    def can_create_reservations_for_other_users(self, user):
+        return self._has_perm(user, 'can_create_reservations_for_other_users')
 
     def is_access_code_enabled(self):
         return self.access_code_type != Resource.ACCESS_CODE_TYPE_NONE
@@ -651,6 +738,28 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
         else:
             metadata_set = self.reservation_metadata_set
         return [x.field_name for x in metadata_set.required_fields.all()]
+
+    def get_included_home_municipality_names(self, cache=None):
+        if not self.reservation_home_municipality_set_id:
+            return []
+        if cache:
+            home_municipality_set = cache[self.reservation_home_municipality_set_id]
+        else:
+            home_municipality_set = self.reservation_home_municipality_set
+        # get home municipalities with translations [{id: {fi, en, sv}}, ...]
+        included_municipalities = home_municipality_set.included_municipalities.all()
+        result_municipalities = []
+
+        for municipality in included_municipalities:
+            result_municipalities.append({
+                'id': municipality.id,
+                "name": {
+                        'fi': municipality.name_fi,
+                        'en': municipality.name_en,
+                        'sv': municipality.name_sv
+                }
+            })
+        return result_municipalities
 
     def clean(self):
         if self.cooldown is None:

@@ -1,0 +1,2412 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-06 14:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: caterings/api.py:154
+msgid "No permission to modify this reservation's catering orders."
+msgstr ""
+
+#: caterings/api.py:160
+msgid "The order contains products from several providers."
+msgstr ""
+
+#: caterings/models.py:20 respa_exchange/models.py:173
+msgid "time of creation"
+msgstr ""
+
+#: caterings/models.py:21 respa_exchange/models.py:178
+msgid "time of modification"
+msgstr ""
+
+#: caterings/models.py:28 caterings/models.py:59
+#: resources/models/accessibility.py:9 resources/models/availability.py:118
+#: resources/models/equipment.py:12 resources/models/equipment.py:24
+#: resources/models/equipment.py:39 resources/models/reservation.py:655
+#: resources/models/resource.py:94 resources/models/resource.py:109
+#: resources/models/resource.py:123 resources/models/resource.py:181
+#: resources/models/resource.py:797 resources/models/unit.py:48
+#: respa_admin/templates/respa_admin/common/_periods_accordion.html:35
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:68
+#: respa_admin/templates/respa_admin/units/_unit_list.html:16
+msgid "Name"
+msgstr ""
+
+#: caterings/models.py:29
+msgid "Price list URL"
+msgstr ""
+
+#: caterings/models.py:30 respa_admin/templates/respa_admin/_nav.html:80
+msgid "Units"
+msgstr ""
+
+#: caterings/models.py:31
+msgid "Notification email"
+msgstr ""
+
+#: caterings/models.py:34 caterings/models.py:45 caterings/models.py:89
+msgid "Catering provider"
+msgstr ""
+
+#: caterings/models.py:35
+msgid "Catering providers"
+msgstr ""
+
+#: caterings/models.py:43 caterings/models.py:50
+msgid "Catering product category"
+msgstr ""
+
+#: caterings/models.py:51
+msgid "Catering product categories"
+msgstr ""
+
+#: caterings/models.py:61
+msgctxt "catering"
+msgid "Category"
+msgstr ""
+
+#: caterings/models.py:64 resources/models/availability.py:119
+#: resources/models/resource.py:182 resources/models/unit.py:49
+msgid "Description"
+msgstr ""
+
+#: caterings/models.py:67
+msgid "Catering product"
+msgstr ""
+
+#: caterings/models.py:68
+msgid "Catering products"
+msgstr ""
+
+#: caterings/models.py:92 resources/models/reservation.py:672
+#: respa_outlook/models.py:145
+msgid "Reservation"
+msgstr ""
+
+#: caterings/models.py:94 reports/api/reservation_details.py:70
+msgid "Invoicing data"
+msgstr ""
+
+#: caterings/models.py:95 reports/api/reservation_details.py:66
+msgid "Message"
+msgstr ""
+
+#: caterings/models.py:96
+msgid "Serving time"
+msgstr ""
+
+#: caterings/models.py:101
+msgid "Catering order"
+msgstr ""
+
+#: caterings/models.py:102
+msgid "Catering orders"
+msgstr ""
+
+#: caterings/models.py:168
+msgid "Product"
+msgstr ""
+
+#: caterings/models.py:171
+msgid "Quantity"
+msgstr ""
+
+#: caterings/models.py:173 resources/models/accessibility.py:11
+msgid "Order"
+msgstr ""
+
+#: caterings/models.py:177
+msgid "Catering order line"
+msgstr ""
+
+#: caterings/models.py:178
+msgid "Catering order lines"
+msgstr ""
+
+#: comments/api.py:39
+msgid "Illegal type."
+msgstr ""
+
+#: comments/api.py:53
+msgid "You cannot comment this object."
+msgstr ""
+
+#: comments/models.py:62 resources/models/accessibility.py:12
+#: resources/models/accessibility.py:29 resources/models/accessibility.py:55
+#: resources/models/accessibility.py:80 resources/models/base.py:48
+msgid "Time of creation"
+msgstr ""
+
+#: comments/models.py:63 resources/models/base.py:49
+msgid "Created by"
+msgstr ""
+
+#: comments/models.py:66 resources/models/resource.py:124
+msgid "Text"
+msgstr ""
+
+#: comments/models.py:79
+msgid "Comment"
+msgstr ""
+
+#: comments/models.py:80 resources/models/reservation.py:125
+msgid "Comments"
+msgstr ""
+
+#: kulkunen/models.py:36 kulkunen/models.py:89
+msgid "installed"
+msgstr ""
+
+#: kulkunen/models.py:37 kulkunen/models.py:92
+msgid "removed"
+msgstr ""
+
+#: kulkunen/models.py:46
+msgid "State of the user"
+msgstr ""
+
+#: kulkunen/models.py:54 kulkunen/models.py:121 kulkunen/models.py:250
+msgid "identifier"
+msgstr ""
+
+#: kulkunen/models.py:55
+msgid "Identifier of user in the access control system (if any)"
+msgstr ""
+
+#: kulkunen/models.py:67
+msgid "[No identifier]"
+msgstr ""
+
+#: kulkunen/models.py:69
+#, python-brace-format
+msgid "{uuid}: {name}"
+msgstr ""
+
+#: kulkunen/models.py:71
+#, python-brace-format
+msgid "{uuid}"
+msgstr ""
+
+#: kulkunen/models.py:88 resources/models/reservation.py:108
+msgid "requested"
+msgstr ""
+
+#: kulkunen/models.py:90 payments/models.py:202
+#: resources/models/reservation.py:105
+msgid "cancelled"
+msgstr ""
+
+#: kulkunen/models.py:91
+msgid "removing"
+msgstr ""
+
+#: kulkunen/models.py:115
+msgid "access code"
+msgstr ""
+
+#: kulkunen/models.py:118
+msgid "State of the grant"
+msgstr ""
+
+#: kulkunen/models.py:122
+msgid "Identifier of grant in the access control system (if any)"
+msgstr ""
+
+#: kulkunen/models.py:125
+msgid "How many times the system has tried to install this grant and failed"
+msgstr ""
+
+#: kulkunen/models.py:128
+msgid "How many times the system has tried to remove this grant (and failed)"
+msgstr ""
+
+#: kulkunen/models.py:139
+#, python-brace-format
+msgid "{user} {reservation} ({state})"
+msgstr ""
+
+#: kulkunen/models.py:241
+msgid "system"
+msgstr ""
+
+#: kulkunen/models.py:247 resources/models/resource.py:256
+#: respa_exchange/models.py:87
+msgid "resource"
+msgstr ""
+
+#: kulkunen/models.py:251
+msgid "Identifier of resource in the access control system (if any)"
+msgstr ""
+
+#: kulkunen/models.py:254 kulkunen/models.py:336
+msgid "Driver-specific configuration"
+msgstr ""
+
+#: kulkunen/models.py:255 kulkunen/models.py:337
+msgid "Internal driver data"
+msgstr ""
+
+#: kulkunen/models.py:332
+msgid "reservation leeway"
+msgstr ""
+
+#: kulkunen/models.py:333
+msgid ""
+"How many minutes before and after the reservation the access will be allowed"
+msgstr ""
+
+#: notifications/apps.py:7
+msgid "Notifications"
+msgstr ""
+
+#: notifications/models.py:68
+msgid "Reservation requested"
+msgstr ""
+
+#: notifications/models.py:69
+msgid "Reservation requested official"
+msgstr ""
+
+#: notifications/models.py:70
+msgid "Reservation requested by official"
+msgstr ""
+
+#: notifications/models.py:72
+msgid "Reservation cancelled"
+msgstr ""
+
+#: notifications/models.py:73
+msgid "Reservation cancelled official"
+msgstr ""
+
+#: notifications/models.py:74
+msgid "Reservation cancelled by official"
+msgstr ""
+
+#: notifications/models.py:76
+msgid "Reservation created"
+msgstr ""
+
+#: notifications/models.py:77
+msgid "Reservation created official"
+msgstr ""
+
+#: notifications/models.py:78
+msgid "Reservation created by official"
+msgstr ""
+
+#: notifications/models.py:80
+msgid "Reservation modified"
+msgstr ""
+
+#: notifications/models.py:81
+msgid "Reservation modified official"
+msgstr ""
+
+#: notifications/models.py:82
+msgid "Reservation modified by official"
+msgstr ""
+
+#: notifications/models.py:84
+msgid "Reservation created with access code"
+msgstr ""
+
+#: notifications/models.py:85
+msgid "Reservation created with access code official"
+msgstr ""
+
+#: notifications/models.py:86
+msgid "Reservation created with access code by official"
+msgstr ""
+
+#: notifications/models.py:88
+msgid "Reservation confirmed"
+msgstr ""
+
+#: notifications/models.py:89
+msgid "Reservation denied"
+msgstr ""
+
+#: notifications/models.py:90
+msgid "Access code was created for a reservation"
+msgstr ""
+
+#: notifications/models.py:92
+msgid "Catering order created"
+msgstr ""
+
+#: notifications/models.py:93
+msgid "Catering order modified"
+msgstr ""
+
+#: notifications/models.py:94
+msgid "Catering order deleted"
+msgstr ""
+
+#: notifications/models.py:95
+msgid "Reservation comment created"
+msgstr ""
+
+#: notifications/models.py:96
+msgid "Catering order comment created"
+msgstr ""
+
+#: notifications/models.py:98
+msgid "Reservation bulk created"
+msgstr ""
+
+#: notifications/models.py:102 resources/models/reservation.py:137
+#: resources/models/resource.py:686
+msgid "Type"
+msgstr ""
+
+#: notifications/models.py:107
+msgid "Short message"
+msgstr ""
+
+#: notifications/models.py:107
+msgid "Short notification text for e.g. SMS messages"
+msgstr ""
+
+#: notifications/models.py:110
+msgid "Subject"
+msgstr ""
+
+#: notifications/models.py:110
+msgid "Subject for email notifications"
+msgstr ""
+
+#: notifications/models.py:112
+msgid "Body"
+msgstr ""
+
+#: notifications/models.py:112
+msgid "Text body for email notifications"
+msgstr ""
+
+#: notifications/models.py:114
+msgid "HTML body"
+msgstr ""
+
+#: notifications/models.py:114
+msgid "HTML body for email notifications"
+msgstr ""
+
+#: notifications/models.py:119
+msgid "Notification template"
+msgstr ""
+
+#: notifications/models.py:120
+msgid "Notification templates"
+msgstr ""
+
+#: payments/admin.py:35
+msgid "All the resources must have manual reservation confirmation disabled."
+msgstr ""
+
+#: payments/admin.py:49
+msgid "price"
+msgstr ""
+
+#: payments/admin.py:52 payments/admin.py:62 payments/models.py:96
+#: resources/models/resource.py:257
+msgid "resources"
+msgstr ""
+
+#: payments/admin.py:67 payments/admin.py:184 payments/models.py:60
+msgid "created at"
+msgstr ""
+
+#: payments/admin.py:72
+msgid "modified at"
+msgstr ""
+
+#: payments/admin.py:87 payments/models.py:90
+msgid "price period"
+msgstr ""
+
+#: payments/admin.py:103
+msgid "product type"
+msgstr ""
+
+#: payments/admin.py:108 payments/admin.py:179 payments/models.py:79
+msgid "price including VAT"
+msgstr ""
+
+#: payments/admin.py:113
+msgid "unit price"
+msgstr ""
+
+#: payments/admin.py:118 payments/models.py:83
+msgid "tax percentage"
+msgstr ""
+
+#: payments/admin.py:133
+msgid "timestamp"
+msgstr ""
+
+#: payments/admin.py:174
+msgid "user"
+msgstr ""
+
+#: payments/api/base.py:51
+msgid "Cannot exceed max product quantity"
+msgstr ""
+
+#: payments/api/base.py:61
+msgid "This product isn't available on the resource."
+msgstr ""
+
+#: payments/api/reservation.py:56
+msgid "At least one order line required."
+msgstr ""
+
+#: payments/api/reservation.py:61
+msgid "Order lines cannot contain duplicate products."
+msgstr ""
+
+#: payments/api/reservation.py:66
+msgid "The order must contain at least one product of type \"rent\"."
+msgstr ""
+
+#: payments/models.py:49
+msgid "rent"
+msgstr ""
+
+#: payments/models.py:50
+msgid "extra"
+msgstr ""
+
+#: payments/models.py:56
+msgid "per period"
+msgstr ""
+
+#: payments/models.py:57
+msgid "fixed"
+msgstr ""
+
+#: payments/models.py:64
+msgid "internal product ID"
+msgstr ""
+
+#: payments/models.py:70
+msgid "archived_at"
+msgstr ""
+
+#: payments/models.py:73
+msgid "type"
+msgstr ""
+
+#: payments/models.py:74
+msgid "SKU"
+msgstr ""
+
+#: payments/models.py:75 respa_exchange/models.py:23
+msgid "name"
+msgstr ""
+
+#: payments/models.py:76 resources/models/availability.py:197
+msgid "description"
+msgstr ""
+
+#: payments/models.py:87
+msgid "price type"
+msgstr ""
+
+#: payments/models.py:93
+msgid "max quantity"
+msgstr ""
+
+#: payments/models.py:101 payments/models.py:284
+msgid "product"
+msgstr ""
+
+#: payments/models.py:102
+msgid "products"
+msgstr ""
+
+#: payments/models.py:113
+msgid "This field requires a non-zero value when price type is \"per period\"."
+msgstr ""
+
+#: payments/models.py:198
+msgid "waiting"
+msgstr ""
+
+#: payments/models.py:199 resources/models/reservation.py:106
+msgid "confirmed"
+msgstr ""
+
+#: payments/models.py:200
+msgid "rejected"
+msgstr ""
+
+#: payments/models.py:201
+msgid "expired"
+msgstr ""
+
+#: payments/models.py:205
+msgid "state"
+msgstr ""
+
+#: payments/models.py:206
+msgid "order number"
+msgstr ""
+
+#: payments/models.py:208 resources/api/reservation.py:867
+#: resources/models/reservation.py:183
+msgid "reservation"
+msgstr ""
+
+#: payments/models.py:214 payments/models.py:282
+msgid "order"
+msgstr ""
+
+#: payments/models.py:215
+msgid "orders"
+msgstr ""
+
+#: payments/models.py:287
+msgid "quantity"
+msgstr ""
+
+#: payments/models.py:290
+msgid "order line"
+msgstr ""
+
+#: payments/models.py:291
+msgid "order lines"
+msgstr ""
+
+#: payments/models.py:306 payments/models.py:315
+msgid "order log entry"
+msgstr ""
+
+#: payments/models.py:310
+msgid "state change"
+msgstr ""
+
+#: payments/models.py:316
+msgid "order log entries"
+msgstr ""
+
+#: payments/utils.py:48
+msgid "hour"
+msgstr ""
+
+#: payments/utils.py:50
+#, python-brace-format
+msgid "{hours} hours"
+msgstr ""
+
+#: reports/api/daily_reservations.py:59
+msgid "No reservations."
+msgstr ""
+
+#: reports/api/daily_reservations.py:79 reports/api/reservation_details.py:49
+msgid "No information available"
+msgstr ""
+
+#: reports/api/daily_reservations.py:90
+msgid "No reservations"
+msgstr ""
+
+#: reports/api/daily_reservations.py:119
+#, python-brace-format
+msgid "Unit \"{pk_value}\" does not exist."
+msgstr ""
+
+#: reports/api/daily_reservations.py:129
+msgid "Either unit or a valid resource id is required."
+msgstr ""
+
+#: reports/api/daily_reservations.py:132
+msgid "No resources found"
+msgstr ""
+
+#: reports/api/daily_reservations.py:166
+msgid "day-report"
+msgstr ""
+
+#: reports/api/reservation_details.py:55
+msgctxt "report"
+msgid "Catering order"
+msgstr ""
+
+#: reports/api/reservation_details.py:62
+msgid "pcs."
+msgstr ""
+
+#: reports/api/reservation_details.py:141
+msgid "Too many (> 1000) reservations to return"
+msgstr ""
+
+#: reports/api/reservation_details.py:146
+msgid "reservation-details"
+msgstr ""
+
+#: resources/admin/__init__.py:90 resources/models/resource.py:801
+msgid "Resource group"
+msgstr ""
+
+#: resources/admin/__init__.py:91 resources/models/resource.py:802
+msgid "Resource groups"
+msgstr ""
+
+#: resources/admin/__init__.py:161
+#: resources/templates/admin/units/import_buttons.html:7
+#: resources/templates/admin/units/import_template.html:20
+msgid "Import Service Map"
+msgstr ""
+
+#: resources/admin/__init__.py:177
+#: resources/templates/admin/units/import_buttons.html:10
+#: resources/templates/admin/units/import_template.html:22
+msgid "Import Kirkanta"
+msgstr ""
+
+#: resources/admin/__init__.py:261
+msgid "Required fields must be a subset of supported fields"
+msgstr ""
+
+#: resources/admin/__init__.py:310
+#: resources/templates/admin/municipalities/import_buttons.html:7
+#: resources/templates/admin/municipalities/import_template.html:20
+msgid "Import municipalities"
+msgstr ""
+
+#: resources/admin/__init__.py:326
+#: resources/templates/admin/municipalities/import_buttons.html:10
+#: resources/templates/admin/municipalities/import_template.html:22
+msgid "Import divisions"
+msgstr ""
+
+#: resources/admin/period_inline.py:38
+msgid "HH:mm"
+msgstr ""
+
+#: resources/api/reservation.py:185
+msgid "Illegal state change"
+msgstr ""
+
+#: resources/api/reservation.py:200
+msgid "You are not allowed to make reservations in this resource."
+msgstr ""
+
+#: resources/api/reservation.py:203
+msgid "You cannot make a reservation in the past"
+msgstr ""
+
+#: resources/api/reservation.py:206
+#, python-format
+msgid "You have to be over %s years old to reserve this resource"
+msgstr ""
+
+#: resources/api/reservation.py:209
+#, python-format
+msgid "You have to be under %s years old to reserve this resource"
+msgstr ""
+
+#: resources/api/reservation.py:221
+#, python-format
+msgid "The resource is reservable only before %(datetime)s"
+msgstr ""
+
+#: resources/api/reservation.py:225
+#, python-format
+msgid "The resource is reservable only after %(datetime)s"
+msgstr ""
+
+#: resources/api/reservation.py:237
+msgid "Only allowed to be set by resource managers"
+msgstr ""
+
+#: resources/api/reservation.py:241
+msgid "You are not allowed to make a reservation of this type"
+msgstr ""
+
+#: resources/api/reservation.py:245
+msgid "Only allowed to be set by staff members"
+msgstr ""
+
+#: resources/api/reservation.py:254
+msgid "This field cannot have a value with this resource"
+msgstr ""
+
+#: resources/api/reservation.py:257
+msgid "This field cannot be changed"
+msgstr ""
+
+#: resources/api/reservation.py:313
+#, python-brace-format
+msgid "Invalid pk \"{pk_value}\" - object does not exist."
+msgstr ""
+
+#: resources/api/reservation.py:392 resources/api/reservation.py:406
+#, python-format
+msgid "Invalid value in filter %(filter)s"
+msgstr ""
+
+#: resources/api/reservation.py:633 resources/api/reservation.py:682
+#: resources/api/reservation.py:714
+msgid "Reservation failed. Too many reservations at once."
+msgstr ""
+
+#: resources/api/reservation.py:649
+msgid "Reservation failed. Begin or end time is missing."
+msgstr ""
+
+#: resources/api/reservation.py:676 resources/api/reservation.py:708
+msgid "Reservation failed. Make sure reservation period is correct."
+msgstr ""
+
+#: resources/api/reservation.py:688 resources/api/reservation.py:720
+msgid "Reservation failed. Overlap with existing reservations."
+msgstr ""
+
+#: resources/api/reservation.py:861 resources/models/reservation.py:184
+msgid "reservations"
+msgstr ""
+
+#: resources/apps.py:7
+msgid "Resource app"
+msgstr ""
+
+#: resources/enums.py:9
+msgid "unit group administrator"
+msgstr ""
+
+#: resources/enums.py:17
+msgid "unit administrator"
+msgstr ""
+
+#: resources/enums.py:18
+msgid "unit manager"
+msgstr ""
+
+#: resources/models/accessibility.py:13 resources/models/accessibility.py:30
+#: resources/models/accessibility.py:56 resources/models/accessibility.py:81
+#: resources/models/base.py:52
+msgid "Time of modification"
+msgstr ""
+
+#: resources/models/accessibility.py:16
+msgid "accessibility viewpoint"
+msgstr ""
+
+#: resources/models/accessibility.py:17
+msgid "accessibility viewpoints"
+msgstr ""
+
+#: resources/models/accessibility.py:27 resources/models/accessibility.py:52
+#: resources/models/accessibility.py:77
+msgid "Accessibility summary value"
+msgstr ""
+
+#: resources/models/accessibility.py:28
+msgid "Ordering priority"
+msgstr ""
+
+#: resources/models/accessibility.py:34
+msgid "accessibility value"
+msgstr ""
+
+#: resources/models/accessibility.py:35
+msgid "accessibility values"
+msgstr ""
+
+#: resources/models/accessibility.py:49 resources/models/accessibility.py:74
+msgid "Resource Accessibility"
+msgstr ""
+
+#: resources/models/accessibility.py:51 resources/models/accessibility.py:76
+#: resources/models/availability.py:110 resources/models/reservation.py:119
+#: resources/models/resource.py:684 respa_outlook/models.py:18
+msgid "Resource"
+msgstr ""
+
+#: resources/models/accessibility.py:54 resources/models/accessibility.py:79
+msgid "Resource ordering priority"
+msgstr ""
+
+#: resources/models/accessibility.py:61
+msgid "resource accessibility summary"
+msgstr ""
+
+#: resources/models/accessibility.py:62
+msgid "resource accessibility summaries"
+msgstr ""
+
+#: resources/models/accessibility.py:86
+msgid "unit accessibility summary"
+msgstr ""
+
+#: resources/models/accessibility.py:87
+msgid "unit accessibility summaries"
+msgstr ""
+
+#: resources/models/availability.py:14
+msgid "open"
+msgstr ""
+
+#: resources/models/availability.py:15
+msgid "closed"
+msgstr ""
+
+#: resources/models/availability.py:16
+msgid "-"
+msgstr ""
+
+#: resources/models/availability.py:112 resources/models/resource.py:176
+#: resources/models/unit.py:192
+#: respa_admin/templates/respa_admin/resources/form/_permissions.html:11
+msgid "Unit"
+msgstr ""
+
+#: resources/models/availability.py:115
+msgid "Start date"
+msgstr ""
+
+#: resources/models/availability.py:116
+msgid "End date"
+msgstr ""
+
+#: resources/models/availability.py:121 resources/models/availability.py:196
+#: respa_admin/templates/respa_admin/forms/widgets/_checkbox.html:14
+msgid "Closed"
+msgstr ""
+
+#: resources/models/availability.py:124
+msgid "period"
+msgstr ""
+
+#: resources/models/availability.py:125
+msgid "periods"
+msgstr ""
+
+#: resources/models/availability.py:133
+msgid "You must set 'resource' or 'unit'"
+msgstr ""
+
+#: resources/models/availability.py:136
+msgid "You must set either 'resource' or 'unit', but not both"
+msgstr ""
+
+#: resources/models/availability.py:150
+msgid "You must set 'start' and 'end' fields."
+msgstr ""
+
+#: resources/models/availability.py:179
+msgid "Monday"
+msgstr ""
+
+#: resources/models/availability.py:180
+msgid "Tuesday"
+msgstr ""
+
+#: resources/models/availability.py:181
+msgid "Wednesday"
+msgstr ""
+
+#: resources/models/availability.py:182
+msgid "Thursday"
+msgstr ""
+
+#: resources/models/availability.py:183
+msgid "Friday"
+msgstr ""
+
+#: resources/models/availability.py:184
+msgid "Saturday"
+msgstr ""
+
+#: resources/models/availability.py:185
+msgid "Sunday"
+msgstr ""
+
+#: resources/models/availability.py:188
+msgid "Period"
+msgstr ""
+
+#: resources/models/availability.py:190
+msgid "Weekday"
+msgstr ""
+
+#: resources/models/availability.py:191
+msgid "Time when opens"
+msgstr ""
+
+#: resources/models/availability.py:192
+msgid "Time when closes"
+msgstr ""
+
+#: resources/models/availability.py:193
+msgid "Range between opens and closes"
+msgstr ""
+
+#: resources/models/availability.py:200
+msgid "day"
+msgstr ""
+
+#: resources/models/availability.py:201
+msgid "days"
+msgstr ""
+
+#: resources/models/base.py:53
+msgid "Modified by"
+msgstr ""
+
+#: resources/models/equipment.py:15
+msgid "equipment category"
+msgstr ""
+
+#: resources/models/equipment.py:16
+msgid "equipment categories"
+msgstr ""
+
+#: resources/models/equipment.py:25
+msgid "Category"
+msgstr ""
+
+#: resources/models/equipment.py:29
+msgctxt "singular"
+msgid "equipment"
+msgstr ""
+
+#: resources/models/equipment.py:30
+msgctxt "plural"
+msgid "equipment"
+msgstr ""
+
+#: resources/models/equipment.py:44
+msgid "equipment alias"
+msgstr ""
+
+#: resources/models/equipment.py:45
+msgid "equipment aliases"
+msgstr ""
+
+#: resources/models/permissions.py:4
+msgid "Can approve reservation"
+msgstr ""
+
+#: resources/models/permissions.py:5
+msgid "Can make reservations"
+msgstr ""
+
+#: resources/models/permissions.py:6
+msgid "Can modify reservations"
+msgstr ""
+
+#: resources/models/permissions.py:7
+msgid "Can make reservations outside opening hours"
+msgstr ""
+
+#: resources/models/permissions.py:8
+msgid "Can view reservation access code"
+msgstr ""
+
+#: resources/models/permissions.py:9
+msgid "Can view reservation extra fields"
+msgstr ""
+
+#: resources/models/permissions.py:10
+msgid "Can access reservation comments"
+msgstr ""
+
+#: resources/models/permissions.py:11
+msgid "Can view reservation catering orders"
+msgstr ""
+
+#: resources/models/permissions.py:12
+msgid "Can modify reservation catering orders"
+msgstr ""
+
+#: resources/models/permissions.py:13
+msgid "Can view reservation product orders"
+msgstr ""
+
+#: resources/models/permissions.py:14
+msgid "Can modify paid reservations"
+msgstr ""
+
+#: resources/models/reservation.py:104
+msgid "created"
+msgstr ""
+
+#: resources/models/reservation.py:107
+msgid "denied"
+msgstr ""
+
+#: resources/models/reservation.py:109
+msgid "waiting for payment"
+msgstr ""
+
+#: resources/models/reservation.py:115
+msgid "Normal reservation"
+msgstr ""
+
+#: resources/models/reservation.py:116
+msgid "Resource blocked"
+msgstr ""
+
+#: resources/models/reservation.py:121
+msgid "Begin time"
+msgstr ""
+
+#: resources/models/reservation.py:122
+msgid "End time"
+msgstr ""
+
+#: resources/models/reservation.py:123
+msgid "Length of reservation"
+msgstr ""
+
+#: resources/models/reservation.py:126 resources/models/reservation.py:677
+msgid "User"
+msgstr ""
+
+#: resources/models/reservation.py:131
+msgid "State"
+msgstr ""
+
+#: resources/models/reservation.py:132
+msgid "Approver"
+msgstr ""
+
+#: resources/models/reservation.py:135
+msgid "Is staff event"
+msgstr ""
+
+#: resources/models/reservation.py:140
+msgid "Access code"
+msgstr ""
+
+#: resources/models/reservation.py:144
+msgid "Event subject"
+msgstr ""
+
+#: resources/models/reservation.py:145
+msgid "Event description"
+msgstr ""
+
+#: resources/models/reservation.py:146
+msgid "Number of participants"
+msgstr ""
+
+#: resources/models/reservation.py:148
+msgid "Participants"
+msgstr ""
+
+#: resources/models/reservation.py:149
+msgid "Host name"
+msgstr ""
+
+#: resources/models/reservation.py:150
+msgid "Require assistance"
+msgstr ""
+
+#: resources/models/reservation.py:151
+msgid "Require workstation"
+msgstr ""
+
+#: resources/models/reservation.py:155
+msgid "Reserver name"
+msgstr ""
+
+#: resources/models/reservation.py:156
+msgid "Reserver ID (business or person)"
+msgstr ""
+
+#: resources/models/reservation.py:157
+msgid "Reserver email address"
+msgstr ""
+
+#: resources/models/reservation.py:158
+msgid "Reserver phone number"
+msgstr ""
+
+#: resources/models/reservation.py:159
+msgid "Reserver address street"
+msgstr ""
+
+#: resources/models/reservation.py:160
+msgid "Reserver address zip"
+msgstr ""
+
+#: resources/models/reservation.py:161
+msgid "Reserver address city"
+msgstr ""
+
+#: resources/models/reservation.py:162
+msgid "Reservation extra questions"
+msgstr ""
+
+#: resources/models/reservation.py:164
+msgid "Company"
+msgstr ""
+
+#: resources/models/reservation.py:165
+msgid "Billing first name"
+msgstr ""
+
+#: resources/models/reservation.py:166
+msgid "Billing last name"
+msgstr ""
+
+#: resources/models/reservation.py:167
+msgid "Billing email address"
+msgstr ""
+
+#: resources/models/reservation.py:168
+msgid "Billing phone number"
+msgstr ""
+
+#: resources/models/reservation.py:169
+msgid "Billing address street"
+msgstr ""
+
+#: resources/models/reservation.py:170
+msgid "Billing address zip"
+msgstr ""
+
+#: resources/models/reservation.py:171
+msgid "Billing address city"
+msgstr ""
+
+#: resources/models/reservation.py:174
+msgid "Original ID"
+msgstr ""
+
+#: resources/models/reservation.py:177
+msgid "Reservation Reminder"
+msgstr ""
+
+#: resources/models/reservation.py:402
+msgid "You must end the reservation after it has begun"
+msgstr ""
+
+#: resources/models/reservation.py:410
+msgid "Begin and end time must match time slots"
+msgstr ""
+
+#: resources/models/reservation.py:414
+msgid "The resource is already reserved for some of the period"
+msgstr ""
+
+#: resources/models/reservation.py:417
+#, python-format
+msgid "The minimum reservation length is %(min_period)s"
+msgstr ""
+
+#: resources/models/reservation.py:425
+#, python-format
+msgid "This resource has people capacity limit of %s"
+msgstr ""
+
+#: resources/models/reservation.py:644
+msgid "Field name"
+msgstr ""
+
+#: resources/models/reservation.py:647
+msgid "Reservation metadata field"
+msgstr ""
+
+#: resources/models/reservation.py:648
+msgid "Reservation metadata fields"
+msgstr ""
+
+#: resources/models/reservation.py:656
+msgid "Supported fields"
+msgstr ""
+
+#: resources/models/reservation.py:658
+msgid "Required fields"
+msgstr ""
+
+#: resources/models/reservation.py:662 resources/models/resource.py:242
+msgid "Reservation metadata set"
+msgstr ""
+
+#: resources/models/reservation.py:663
+msgid "Reservation metadata sets"
+msgstr ""
+
+#: resources/models/reservation.py:674
+msgid "Reminder Date"
+msgstr ""
+
+#: resources/models/reservation.py:676
+msgid "Notification type"
+msgstr ""
+
+#: resources/models/reservation.py:679
+msgid "Action by official"
+msgstr ""
+
+#: resources/models/resource.py:62 resources/models/resource.py:65
+msgid "Invalid value"
+msgstr ""
+
+#: resources/models/resource.py:88
+msgid "Space"
+msgstr ""
+
+#: resources/models/resource.py:89
+msgid "Person"
+msgstr ""
+
+#: resources/models/resource.py:90
+msgid "Item"
+msgstr ""
+
+#: resources/models/resource.py:93
+msgid "Main type"
+msgstr ""
+
+#: resources/models/resource.py:97
+msgid "resource type"
+msgstr ""
+
+#: resources/models/resource.py:98
+msgid "resource types"
+msgstr ""
+
+#: resources/models/resource.py:107
+msgid "Parent"
+msgstr ""
+
+#: resources/models/resource.py:110 resources/models/resource.py:175
+msgid "Public"
+msgstr ""
+
+#: resources/models/resource.py:113
+msgid "purpose"
+msgstr ""
+
+#: resources/models/resource.py:114
+msgid "purposes"
+msgstr ""
+
+#: resources/models/resource.py:127
+msgctxt "singular"
+msgid "terms of use"
+msgstr ""
+
+#: resources/models/resource.py:128
+msgctxt "plural"
+msgid "terms of use"
+msgstr ""
+
+#: resources/models/resource.py:162 resources/models/resource.py:170
+msgid "None"
+msgstr ""
+
+#: resources/models/resource.py:163
+msgid "Weak"
+msgstr ""
+
+#: resources/models/resource.py:164
+msgid "Strong"
+msgstr ""
+
+#: resources/models/resource.py:171
+msgid "4-digit PIN code"
+msgstr ""
+
+#: resources/models/resource.py:172
+msgid "6-digit PIN code"
+msgstr ""
+
+#: resources/models/resource.py:178
+msgid "Resource type"
+msgstr ""
+
+#: resources/models/resource.py:180
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:13
+msgid "Purposes"
+msgstr ""
+
+#: resources/models/resource.py:183
+msgid "Age restriction (min)"
+msgstr ""
+
+#: resources/models/resource.py:184
+msgid "Age restriction (max)"
+msgstr ""
+
+#: resources/models/resource.py:185
+msgid "Need manual confirmation"
+msgstr ""
+
+#: resources/models/resource.py:187
+msgid "E-mail addresses for client correspondence"
+msgstr ""
+
+#: resources/models/resource.py:189
+msgid "Authentication"
+msgstr ""
+
+#: resources/models/resource.py:191
+msgid "People capacity"
+msgstr ""
+
+#: resources/models/resource.py:192
+msgid "Area (m2)"
+msgstr ""
+
+#: resources/models/resource.py:195 resources/models/unit.py:51
+#: respa_admin/templates/respa_admin/units/form/_general_info.html:19
+msgid "Location"
+msgstr ""
+
+#: resources/models/resource.py:197
+msgid "Minimum reservation time"
+msgstr ""
+
+#: resources/models/resource.py:199
+msgid "Maximum reservation time"
+msgstr ""
+
+#: resources/models/resource.py:201
+msgid "Reservation cooldown"
+msgstr ""
+
+#: resources/models/resource.py:203
+msgid "Slot size for reservation time"
+msgstr ""
+
+#: resources/models/resource.py:206
+#: respa_admin/templates/respa_admin/resources/form/_equipment.html:5
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:36
+msgid "Equipment"
+msgstr ""
+
+#: resources/models/resource.py:207
+msgid "Maximum number of active reservations per user"
+msgstr ""
+
+#: resources/models/resource.py:209
+msgid "Reservable"
+msgstr ""
+
+#: resources/models/resource.py:210
+msgid "Reservation info"
+msgstr ""
+
+#: resources/models/resource.py:211
+msgid "Responsible contact info"
+msgstr ""
+
+#: resources/models/resource.py:212
+msgid "Generic terms"
+msgstr ""
+
+#: resources/models/resource.py:214
+msgid "Specific terms"
+msgstr ""
+
+#: resources/models/resource.py:216
+msgid "Extra content to \"reservation requested\" notification"
+msgstr ""
+
+#: resources/models/resource.py:218
+msgid "Extra content to \"reservation confirmed\" notification"
+msgstr ""
+
+#: resources/models/resource.py:219
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:52
+msgid "Reservation additional information"
+msgstr ""
+
+#: resources/models/resource.py:222
+msgid "Min price per hour"
+msgstr ""
+
+#: resources/models/resource.py:224
+msgid "Max price per hour"
+msgstr ""
+
+#: resources/models/resource.py:227
+msgid "Access code type"
+msgstr ""
+
+#: resources/models/resource.py:234
+msgid "Generate access codes"
+msgstr ""
+
+#: resources/models/resource.py:235
+msgid "Should access codes generated by the general system"
+msgstr ""
+
+#: resources/models/resource.py:237 resources/models/unit.py:73
+msgid "Reservable max. days in advance"
+msgstr ""
+
+#: resources/models/resource.py:239 resources/models/unit.py:75
+msgid "Reservable min. days in advance"
+msgstr ""
+
+#: resources/models/resource.py:246
+msgid "External reservation URL"
+msgstr ""
+
+#: resources/models/resource.py:247
+msgid ""
+"A link to an external reservation system if this resource is managed "
+"elsewhere"
+msgstr ""
+
+#: resources/models/resource.py:250 respa_outlook/admin.py:21
+#: respa_outlook/models.py:28
+msgid "Outlook configuration"
+msgstr ""
+
+#: resources/models/resource.py:315
+msgid "You cannot make a multi day reservation"
+msgstr ""
+
+#: resources/models/resource.py:321
+msgid "You must start and end the reservation during opening hours"
+msgstr ""
+
+#: resources/models/resource.py:324
+#, python-format
+msgid "The maximum reservation length is %(max_period)s"
+msgstr ""
+
+#: resources/models/resource.py:343
+msgid "Maximum number of active reservations for this resource exceeded."
+msgstr ""
+
+#: resources/models/resource.py:664
+msgid "This value cannot be greater than max price per hour"
+msgstr ""
+
+#: resources/models/resource.py:667 resources/models/resource.py:670
+msgid "This value must be a multiple of slot_size"
+msgstr ""
+
+#: resources/models/resource.py:674
+msgid "This cannot be enabled because the resource has product(s)."
+msgstr ""
+
+#: resources/models/resource.py:679
+msgid "Main photo"
+msgstr ""
+
+#: resources/models/resource.py:680
+msgid "Ground plan"
+msgstr ""
+
+#: resources/models/resource.py:681
+msgid "Map"
+msgstr ""
+
+#: resources/models/resource.py:682
+msgid "Other"
+msgstr ""
+
+#: resources/models/resource.py:687
+msgid "Caption"
+msgstr ""
+
+#: resources/models/resource.py:689
+msgid "Image"
+msgstr ""
+
+#: resources/models/resource.py:691
+msgid "Cropping"
+msgstr ""
+
+#: resources/models/resource.py:692
+msgid "Sort order"
+msgstr ""
+
+#: resources/models/resource.py:735
+msgid "Image has to be larger than 5x5"
+msgstr ""
+
+#: resources/models/resource.py:737
+msgid "Image has to be less than 1920x1280"
+msgstr ""
+
+#: resources/models/resource.py:771
+msgid "resource image"
+msgstr ""
+
+#: resources/models/resource.py:772
+msgid "resource images"
+msgstr ""
+
+#: resources/models/resource.py:788
+msgctxt "singular"
+msgid "resource equipment"
+msgstr ""
+
+#: resources/models/resource.py:789
+msgctxt "plural"
+msgid "resource equipment"
+msgstr ""
+
+#: resources/models/resource.py:796
+msgid "Identifier"
+msgstr ""
+
+#: resources/models/resource.py:798
+#: respa_admin/templates/respa_admin/_nav.html:77
+msgid "Resources"
+msgstr ""
+
+#: resources/models/resource.py:822
+msgid "Overlapping opening hours"
+msgstr ""
+
+#: resources/models/unit.py:52
+msgid "Map service ID"
+msgstr ""
+
+#: resources/models/unit.py:53
+msgid "Time zone"
+msgstr ""
+
+#: resources/models/unit.py:56
+msgid "Manager email"
+msgstr ""
+
+#: resources/models/unit.py:58
+msgid "Street address"
+msgstr ""
+
+#: resources/models/unit.py:59
+msgid "Postal code"
+msgstr ""
+
+#: resources/models/unit.py:60
+msgid "Phone number"
+msgstr ""
+
+#: resources/models/unit.py:61 respa_outlook/models.py:21
+msgid "Email"
+msgstr ""
+
+#: resources/models/unit.py:62
+msgid "WWW link"
+msgstr ""
+
+#: resources/models/unit.py:63
+msgid "Full postal address"
+msgstr ""
+
+#: resources/models/unit.py:65
+msgid "Municipality"
+msgstr ""
+
+#: resources/models/unit.py:68
+msgid "Picture URL"
+msgstr ""
+
+#: resources/models/unit.py:70
+msgid "Picture caption"
+msgstr ""
+
+#: resources/models/unit.py:78
+msgid "External data source"
+msgstr ""
+
+#: resources/models/unit.py:80
+msgid "External data source for opening hours"
+msgstr ""
+
+#: resources/models/unit.py:82
+msgid "Send SMS Reminder"
+msgstr ""
+
+#: resources/models/unit.py:84
+msgid "How many hours before reservation the reminder is sent"
+msgstr ""
+
+#: resources/models/unit.py:90
+msgid "unit"
+msgstr ""
+
+#: resources/models/unit.py:91
+msgid "units"
+msgstr ""
+
+#: resources/models/unit.py:170 resources/models/unit_group.py:48
+msgid "subject of the authorization"
+msgstr ""
+
+#: resources/models/unit.py:173 resources/models/unit_group.py:51
+msgid "authorization level"
+msgstr ""
+
+#: resources/models/unit.py:177 resources/models/unit_group.py:55
+msgid "authorized user"
+msgstr ""
+
+#: resources/models/unit.py:181
+msgid "unit authorization"
+msgstr ""
+
+#: resources/models/unit.py:182
+msgid "unit authorizations"
+msgstr ""
+
+#: resources/models/unit.py:194
+msgid "Namespace"
+msgstr ""
+
+#: resources/models/unit.py:195
+msgid "Value"
+msgstr ""
+
+#: resources/models/unit.py:198
+msgid "unit identifier"
+msgstr ""
+
+#: resources/models/unit.py:199
+msgid "unit identifiers"
+msgstr ""
+
+#: resources/models/unit_group.py:17
+msgid "unit group"
+msgstr ""
+
+#: resources/models/unit_group.py:18
+msgid "unit groups"
+msgstr ""
+
+#: resources/models/unit_group.py:59
+msgid "unit group authorization"
+msgstr ""
+
+#: resources/models/unit_group.py:60
+msgid "unit group authorizations"
+msgstr ""
+
+#: resources/models/utils.py:97
+#, python-format
+msgid "%(count)d hour"
+msgid_plural "%(count)d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: resources/models/utils.py:98
+#, python-format
+msgid "%(count)d minute"
+msgid_plural "%(count)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: resources/templates/admin/municipalities/import_template.html:10
+#: resources/templates/admin/units/import_template.html:10
+msgid "Home"
+msgstr ""
+
+#: resources/templates/admin/resources/period_inline.html:10
+msgid "Add Another"
+msgstr ""
+
+#: resources/templates/admin/resources/period_inline.html:36
+#: respa_admin/templates/respa_admin/resources/form/_permissions.html:32
+msgid "Delete Item"
+msgstr ""
+
+#: respa/settings.py:208
+msgid "Finnish"
+msgstr ""
+
+#: respa/settings.py:209
+msgid "English"
+msgstr ""
+
+#: respa/settings.py:210
+msgid "Swedish"
+msgstr ""
+
+#: respa_admin/forms.py:143 respa_admin/forms.py:155
+msgid "yyyy-mm-dd"
+msgstr ""
+
+#: respa_admin/forms.py:264
+#: respa_admin/templates/respa_admin/resources/form/_terms.html:28
+msgid "Yes"
+msgstr ""
+
+#: respa_admin/forms.py:264
+msgid "No"
+msgstr ""
+
+#: respa_admin/forms.py:267
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:109
+msgid "Hidden"
+msgstr ""
+
+#: respa_admin/forms.py:267
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:107
+msgid "Published"
+msgstr ""
+
+#: respa_admin/forms.py:270
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:101
+msgid "Can not be reserved"
+msgstr ""
+
+#: respa_admin/forms.py:270
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:99
+msgid "Bookable"
+msgstr ""
+
+#: respa_admin/forms.py:340
+msgid "Please check the opening hours."
+msgstr ""
+
+#: respa_admin/forms.py:437
+msgid "Staff account"
+msgstr ""
+
+#: respa_admin/forms.py:438
+msgid "Allows user to grant permissions to units"
+msgstr ""
+
+#: respa_admin/forms.py:462
+msgid "You can't add permissions to unit you are not admin of"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/_nav.html:49
+msgid "Log out"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/_nav.html:84
+#: respa_admin/templates/respa_admin/user_management.html:10
+msgid "User management"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/_nav.html:90
+msgid "Contact us"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/_nav.html:99
+msgid "Instructions"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/common/_notification.html:5
+msgid "Logged in as user"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/common/_period_day.html:32
+msgid "Copy to next"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/common/_periods_accordion.html:19
+msgid "Copy time period"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/common/_periods_accordion.html:23
+msgid "Edit time period"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/common/_periods_accordion.html:39
+msgid "Time interval"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/common/_periods_accordion.html:61
+msgid "Remove time period"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/forms/_form_errors.html:5
+msgid "Tarkista seuraavat virheet"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/forms/_image.html:7
+msgid "Choose image"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/forms/_image.html:18
+msgid "Remove image"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:4
+#: respa_admin/templates/respa_admin/login.html:30
+#: respa_admin/templates/respa_admin/login.html:68
+msgid "Log in"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:14
+msgid "You are not allowed to use Respa Admin."
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:17
+#, python-format
+msgid ""
+"\n"
+"                Sorry, but \"%(user)s\" is not allowed to use Respa Admin.\n"
+"                Please log in with a different account.\n"
+"                "
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:26
+msgid "Login failed"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:39
+msgid "Log in with Turku account"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:49
+msgid "Username"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/login.html:59 respa_outlook/models.py:22
+msgid "Password"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/page_resources.html:10
+msgid "All resources I manage"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/page_resources.html:15
+msgid "Add a new resource"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/page_resources.html:20
+#: respa_admin/templates/respa_admin/page_units.html:16
+msgid "Search"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/page_units.html:10
+msgid "All units I manage"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:8
+msgid "All resources"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:10
+msgid "Filter"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:20
+msgid "Filter by type"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:44
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:17
+msgid "Filter by unit"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:71
+msgid "Availability"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:74
+msgid "Visibility"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_resource_list.html:116
+#: respa_admin/templates/respa_admin/units/_unit_list.html:46
+msgid "Edit"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:9
+msgid "Unit management"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:51
+#: respa_admin/templates/respa_admin/resources/_user_list.html:31
+msgid "Staff"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:55
+msgid "Admin"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:61
+msgid "Manager"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:65
+#: respa_admin/templates/respa_admin/resources/form/_permissions.html:13
+msgid "Can approve reservations"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_unit_user_list.html:83
+#: respa_admin/templates/respa_admin/resources/_user_list.html:48
+msgid "Edit permissions"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_user_list.html:9
+msgid "Users by search term"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/_user_list.html:12
+msgid "Clear search"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/edit_user.html:12
+#: respa_admin/templates/respa_admin/resources/form/_toolbar.html:14
+#: respa_admin/templates/respa_admin/units/form/_toolbar.html:6
+msgid "Save"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/edit_user.html:15
+msgid "Cancel"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/edit_user.html:18
+msgid "Add permissions"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_accessibility.html:5
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:39
+msgid "Accessibility"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_accessibility.html:8
+msgid "Accessibility data is entered in the Accessibility Application."
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_accessibility.html:10
+msgid "Enter accessibility data"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:5
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:31
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:33
+msgid "Booking information"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:6
+#: respa_admin/templates/respa_admin/resources/form/_equipment.html:6
+#: respa_admin/templates/respa_admin/resources/form/_images.html:6
+#: respa_admin/templates/respa_admin/resources/form/_terms.html:6
+msgid "*Mandatory fields"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:32
+msgid "Additional information before calendar."
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:40
+msgid "E-mail notifications"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_booking.html:41
+msgid "A notification will be sent when a space is booked."
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_equipment.html:8
+msgid "Choose from the list below"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:5
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:32
+#: respa_admin/templates/respa_admin/units/form/_general_info.html:5
+#: respa_admin/templates/respa_admin/units/form/_nav.html:32
+msgid "General information"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:6
+#: respa_admin/templates/respa_admin/units/form/_general_info.html:6
+msgid "*Mandatory Fields"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:18
+#: respa_admin/templates/respa_admin/units/form/_general_info.html:9
+msgid "Name and description"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:28
+msgid "Contact person"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:29
+msgid "Contact person information is only for internal use."
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_general_info.html:35
+msgid "External calendar"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_images.html:5
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:34
+msgid "Images"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_images.html:9
+msgid "You can only choose one main image."
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_images.html:12
+msgid "Add image"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:24
+#: respa_admin/templates/respa_admin/units/form/_nav.html:24
+msgid "Translations"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:35
+#: respa_admin/templates/respa_admin/resources/form/_terms.html:5
+msgid "Authentication, terms and price"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_nav.html:37
+#: respa_admin/templates/respa_admin/resources/form/_periods.html:5
+#: respa_admin/templates/respa_admin/units/form/_nav.html:33
+#: respa_admin/templates/respa_admin/units/form/_periods.html:5
+msgid "Opening hours"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_periods.html:9
+#: respa_admin/templates/respa_admin/units/form/_periods.html:9
+msgid "Add new time period"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_periods.html:12
+#: respa_admin/templates/respa_admin/units/form/_periods.html:12
+msgid "Add general time period"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_permissions.html:5
+#: users/admin.py:45
+msgid "Permissions"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_permissions.html:12
+msgid "Manager/admin of unit"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_terms.html:22
+msgid "Pricing"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_terms.html:24
+msgid "The space is free of charge"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_toolbar.html:5
+#: respa_admin/templates/respa_admin/units/form/_toolbar.html:5
+msgid "Functions"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_toolbar.html:18
+msgid "View resource"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/resources/form/_user_info.html:6
+msgid "User profile"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/units/_unit_list.html:8
+msgid "All units"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/units/_unit_list.html:19
+msgid "Editable"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/units/_unit_list.html:37
+msgid "Can be edited"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/units/_unit_list.html:39
+msgid "Can not be edited"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/units/form/_general_info.html:29
+msgid "Contact"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/units/form/_toolbar.html:10
+msgid "View unit"
+msgstr ""
+
+#: respa_admin/templates/respa_admin/user_management.html:15
+msgid "Search for users"
+msgstr ""
+
+#: respa_admin/views/resources.py:111
+msgid "You can't remove staff status from user with existing permissions"
+msgstr ""
+
+#: respa_admin/views/resources.py:149 respa_admin/views/resources.py:364
+msgid "Failed to save. Please check the form for errors."
+msgstr ""
+
+#: respa_admin/views/resources.py:280 respa_admin/views/resources.py:380
+msgid "Edit resource"
+msgstr ""
+
+#: respa_admin/views/resources.py:282
+msgid "Create new resource"
+msgstr ""
+
+#: respa_admin/views/units.py:79
+msgid "Unit saved"
+msgstr ""
+
+#: respa_admin/views/units.py:87
+msgid "Edit unit"
+msgstr ""
+
+#: respa_admin/views/units.py:89
+msgid "Create new unit"
+msgstr ""
+
+#: respa_admin/views/units.py:140
+msgid "Saving failed. Check error in the form."
+msgstr ""
+
+#: respa_admin/views/units.py:148
+msgid "Edit Unit"
+msgstr ""
+
+#: respa_exchange/models.py:26
+msgid "a descriptive name for this Exchange configuration"
+msgstr ""
+
+#: respa_exchange/models.py:29
+msgid "EWS URL"
+msgstr ""
+
+#: respa_exchange/models.py:30
+msgid ""
+"the URL to the Exchange Web Service (e.g. https://contoso.com/EWS/Exchange."
+"asmx)"
+msgstr ""
+
+#: respa_exchange/models.py:33
+msgid "username"
+msgstr ""
+
+#: respa_exchange/models.py:35
+msgid "the service user to authenticate as, in domain\\username format"
+msgstr ""
+
+#: respa_exchange/models.py:38
+msgid "password"
+msgstr ""
+
+#: respa_exchange/models.py:40
+msgid "the user's password (stored as plain-text)"
+msgstr ""
+
+#: respa_exchange/models.py:43
+msgid "enabled"
+msgstr ""
+
+#: respa_exchange/models.py:46
+msgid ""
+"whether synchronization is enabled at all against this Exchange instance"
+msgstr ""
+
+#: respa_exchange/models.py:53 respa_exchange/models.py:81
+#: respa_exchange/models.py:226
+msgid "Exchange configuration"
+msgstr ""
+
+#: respa_exchange/models.py:54
+msgid "Exchange configurations"
+msgstr ""
+
+#: respa_exchange/models.py:93
+msgid "sync Exchange to Respa"
+msgstr ""
+
+#: respa_exchange/models.py:94
+msgid ""
+"if disabled, events will not be synced from the Exchange calendar to Respa"
+msgstr ""
+
+#: respa_exchange/models.py:99
+msgid "sync Respa to Exchange"
+msgstr ""
+
+#: respa_exchange/models.py:101
+msgid ""
+"if disabled, new events will not be synced from Respa to the Exchange "
+"calendar; pre-existing events continue to be updated"
+msgstr ""
+
+#: respa_exchange/models.py:106
+msgid "principal email"
+msgstr ""
+
+#: respa_exchange/models.py:108
+msgid "the email address for this resource in Exchange"
+msgstr ""
+
+#: respa_exchange/models.py:112
+msgid "Exchange resource"
+msgstr ""
+
+#: respa_exchange/models.py:113
+msgid "Exchange resources"
+msgstr ""
+
+#: respa_exchange/models.py:184
+msgid "Exchange reservation"
+msgstr ""
+
+#: respa_exchange/models.py:185
+msgid "Exchange reservations"
+msgstr ""
+
+#: respa_outlook/admin.py:22 respa_outlook/models.py:29
+msgid "Outlook configurations"
+msgstr ""
+
+#: respa_outlook/admin.py:32 respa_outlook/models.py:156
+msgid "Outlook reservation"
+msgstr ""
+
+#: respa_outlook/admin.py:33 respa_outlook/models.py:157
+msgid "Outlook reservations"
+msgstr ""
+
+#: respa_outlook/models.py:17
+msgid "Configuration name"
+msgstr ""
+
+#: respa_outlook/models.py:143
+msgid "Reserver name & Resource"
+msgstr ""
+
+#: respa_outlook/models.py:148
+msgid "Exchange ID"
+msgstr ""
+
+#: respa_outlook/models.py:149
+msgid "Exchange Key"
+msgstr ""
+
+#: respa_outlook/models.py:151
+msgid "Modified"
+msgstr ""
+
+#: tkusers/admin.py:36
+msgid "Django admin"
+msgstr ""
+
+#: tkusers/admin.py:37
+#, python-format
+msgid "%(site_name)s admin"
+msgstr ""
+
+#: tkusers/apps.py:8
+msgid "Turku Users"
+msgstr ""
+
+#: tkusers/models.py:23
+msgid "AD Group"
+msgstr ""
+
+#: tkusers/models.py:38
+msgid "AD Group Mapping"
+msgstr ""
+
+#: tkusers/oidc.py:50
+#, python-brace-format
+msgid "Not authorized for API scope \"{api_scope}\""
+msgstr ""
+
+#: tkusers/oidc.py:63
+msgid "Invalid Authorization header. No credentials provided"
+msgstr ""
+
+#: tkusers/oidc.py:66
+msgid ""
+"Invalid Authorization header. Credentials string should not contain spaces."
+msgstr ""
+
+#: tkusers/templates/admin/base_site_default.html:3
+msgid "Django site admin"
+msgstr ""
+
+#: tkusers/templates/admin/base_site_default.html:32
+msgid "Django administration"
+msgstr ""
+
+#: tkusers/user_utils.py:68
+msgid "Invalid payload"
+msgstr ""
+
+#: tkusers/views.py:24
+msgid "You have been successfully logged out."
+msgstr ""
+
+#: users/admin.py:44
+msgid "Personal info"
+msgstr ""
+
+#: users/admin.py:47
+msgid "Important dates"
+msgstr ""
+
+#: users/admin.py:135
+#, python-format
+msgid "%(name)s object with primary key %(key)r does not exist."
+msgstr ""
+
+#: users/admin.py:145
+msgid "Password changed successfully."
+msgstr ""
+
+#: users/admin.py:165
+#, python-format
+msgid "Change password: %s"
+msgstr ""
+
+#: users/models.py:11
+msgid "First name"
+msgstr ""
+
+#: users/models.py:12
+msgid "Last name"
+msgstr ""
+
+#: users/models.py:14
+msgid "Birthdate"
+msgstr ""
+
+#: users/models.py:22
+msgid "Favorite resources"
+msgstr ""
+
+#: users/models.py:28
+msgid "staff status"
+msgstr ""
+
+#: users/models.py:31
+msgid ""
+"Designates whether the user can log into Django Admin or Respa Admin sites."
+msgstr ""
+
+#: users/models.py:35
+msgid "general administrator status"
+msgstr ""
+
+#: users/models.py:37
+msgid ""
+"Designates whether the user is a General Administrator with special "
+"permissions to many objects within Respa. This is almost as powerful as "
+"superuser."
+msgstr ""

@@ -3,9 +3,10 @@ info:
   title: Respa
   description: The Respa API provides categorized data on resources available for reservation within a city or metropolitan area
     and enables the reservation of these resources. The API provides data in the JSON format, in a RESTful fashion.
-  version: v1
+  version: 1.6.1
 servers:
 - url: https://api.hel.fi/respa/v1
+- url: https://respa.koe.hel.ninja/v1
 tags:
 - name: resource
   description: Look for available resources
@@ -732,7 +733,8 @@ paths:
           type: boolean
       - name: include
         in: query
-        description: Include extra data to queryset. Currently accepts value `resource_detail`.
+        description: Include extra data to queryset. Currently accepts values `resource_detail` and `order_detail` (available only when the payment support is enabled).
+          To get more than one extra data entry, use multiple include parameters eg. `?include=resource_detail&include=order_detail`.
         schema:
           type: string
         example: resource_detail

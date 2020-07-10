@@ -7,13 +7,11 @@ from users.models import User
 login_url = reverse('respa_admin:login')
 tunnistamo_login_url = reverse('respa_admin:tunnistamo-login')
 
-
 @pytest.mark.django_db
-def test_tunnistamo_login_redirects_to_turku_login(client):
+def test_tunnistamo_login_redirects_to_helsinki_login(client):
     response = client.get(tunnistamo_login_url)
     assert response.status_code == 302
-    assert response.url == '/accounts/tunnistamo/login/'
-
+    assert response.url == '/accounts/helsinki/login/'
 
 @pytest.mark.django_db
 def test_tunnistamo_login_preserves_next(client):
@@ -29,7 +27,7 @@ def test_tunnistamo_login_when_already_logged_in_as_non_staff(client):
     assert initial_login_ok
     response = client.get(tunnistamo_login_url)
     assert response.status_code == 302
-    assert response.url == 'https://turku.fi'
+    assert response.url == 'https://hel.fi'
 
 
 @pytest.mark.django_db
@@ -114,5 +112,5 @@ def test_logout(client):
     response = client.get(reverse('respa_admin:logout'))
     assert response.status_code == 302
     assert response.url == (
-        'https://turku.fi')
+        'https://hel.fi')
     assert '_auth_user_id' not in client.session

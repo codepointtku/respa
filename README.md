@@ -89,7 +89,7 @@ psql -U postgres --dbname=respa -c "create extension postgis;"
 
 ### Build Respa Admin static resources
 
-Make sure you have Node 8 or LTS and yarn installed.
+Make sure you have Node 8 or LTS and npm installed.
 
 ```shell
 ./build-resources
@@ -97,12 +97,10 @@ Make sure you have Node 8 or LTS and yarn installed.
 
 ### Dev environment configuration
 
-Create a file `respa/.env` to configure the dev environment e.g.:
+Copy `.env.example` to `respa/.env`. Make sure the config matches your database setup.
 
 ```
-DEBUG=1
-INTERNAL_IPS='127.0.0.1'
-DATABASE_URL='postgis://respa:password@localhost:5432/respa'
+cp .env.example respa/.env
 ```
 ### Run Django migrations and import data
 
@@ -162,7 +160,7 @@ with staff privileges and use that session to access the Respa Admin.
 When accessing the Respa Admin without being logged in, the login
 happens with Tunnistamo.  To test the Tunnistamo login flow in local
 development environment this needs either real Respa app client id and
-client secret in the production Tunnistamo or modifying tkusers to use
+client secret in the production Tunnistamo or modifying helusers to use
 local Tunnistamo.  The client id and client secret should be configured
 in Django Admin or shell within a socialaccount.SocialApp instance with
 id "turku".  When adding the app to Tunnistamo, the OIDC callback
@@ -270,10 +268,18 @@ cd $HOME/respa
 
 ### Delayed SMS Notifications
 
+Use cron
+
 ```sh
-$ chmod +x ./handle_reminders.sh
-$ ./handle_reminders.sh
+$ crontab -e
+$ */5 * * * * cd <project_path> && <venv_path/bin/python> manage.py handle_reminders > /dev/null 2>&1
 ```
+### Theme customization
+
+Theme customization, such as changing the main colors, can be done in `respa_admin/static_src/styles/application-variables.scss`.
+
+By default, color theme is imported in this file. If you want to override certain colors, take a copy of the contents of the file
+specified in the import, and customize. Remember to remove or uncomment the original import.
 
 Requirements
 ------------

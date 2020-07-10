@@ -73,7 +73,7 @@ def test_unit3():
 
 
 @pytest.fixture
-def terms_of_use():
+def generic_terms():
     return TermsOfUse.objects.create(
         name_fi='testikäyttöehdot',
         name_en='test terms of use',
@@ -82,9 +82,20 @@ def terms_of_use():
     )
 
 
+@pytest.fixture
+def payment_terms():
+    return TermsOfUse.objects.create(
+        name_fi='testimaksuehdot',
+        name_en='test terms of payment',
+        text_fi='kaikki on maksullista',
+        text_en='everything is chargeable',
+        terms_type=TermsOfUse.TERMS_TYPE_PAYMENT
+    )
+
+
 @pytest.mark.django_db
 @pytest.fixture
-def resource_in_unit(space_resource_type, test_unit, terms_of_use):
+def resource_in_unit(space_resource_type, test_unit, generic_terms, payment_terms):
     return Resource.objects.create(
         type=space_resource_type,
         authentication="none",
@@ -93,7 +104,8 @@ def resource_in_unit(space_resource_type, test_unit, terms_of_use):
         max_reservations_per_user=1,
         max_period=datetime.timedelta(hours=2),
         reservable=True,
-        generic_terms=terms_of_use,
+        generic_terms=generic_terms,
+        payment_terms=payment_terms,
         specific_terms_fi='spesifiset käyttöehdot',
         specific_terms_en='specific terms of use',
         reservation_confirmed_notification_extra_en='this resource rocks'
@@ -236,6 +248,36 @@ def staff_user():
 
 @pytest.mark.django_db
 @pytest.fixture
+def unit_admin_user(resource_in_unit):
+    user = get_user_model().objects.create(
+        username='test_admin_user',
+        first_name='Inspector',
+        last_name='Lestrade',
+        email='lestrade@scotlandyard.co.uk',
+        is_staff=True,
+        preferred_language='en'
+    )
+    user.unit_authorizations.create(subject=resource_in_unit.unit, level=UnitAuthorizationLevel.admin)
+    return user
+
+
+@pytest.mark.django_db
+@pytest.fixture
+def unit_admin_user(resource_in_unit):
+    user = get_user_model().objects.create(
+        username='test_admin_user',
+        first_name='Inspector',
+        last_name='Lestrade',
+        email='lestrade@scotlandyard.co.uk',
+        is_staff=True,
+        preferred_language='en'
+    )
+    user.unit_authorizations.create(subject=resource_in_unit.unit, level=UnitAuthorizationLevel.admin)
+    return user
+
+
+@pytest.mark.django_db
+@pytest.fixture
 def unit_manager_user(resource_in_unit):
     user = get_user_model().objects.create(
         username='test_manager_user',
@@ -247,6 +289,36 @@ def unit_manager_user(resource_in_unit):
     )
     user.unit_authorizations.create(subject=resource_in_unit.unit, level=UnitAuthorizationLevel.manager)
     return user
+
+@pytest.mark.django_db
+@pytest.fixture
+def unit_viewer_user(resource_in_unit):
+    user = get_user_model().objects.create(
+        username='test_viewer_user',
+        first_name='Inspector',
+        last_name='Watson',
+        email='watson@scotlandyard.co.uk',
+        is_staff=True,
+        preferred_language='en'
+    )
+    user.unit_authorizations.create(subject=resource_in_unit.unit, level=UnitAuthorizationLevel.viewer)
+    return user
+
+
+@pytest.mark.django_db
+@pytest.fixture
+def unit_viewer_user(resource_in_unit):
+    user = get_user_model().objects.create(
+        username='test_viewer_user',
+        first_name='Inspector',
+        last_name='Watson',
+        email='watson@scotlandyard.co.uk',
+        is_staff=True,
+        preferred_language='en'
+    )
+    user.unit_authorizations.create(subject=resource_in_unit.unit, level=UnitAuthorizationLevel.viewer)
+    return user
+
 
 @pytest.mark.django_db
 @pytest.fixture
