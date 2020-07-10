@@ -171,6 +171,11 @@ class AbloyDriver(AccessControlDriver):
         except Exception as e:
             raise
 
+    def prepare_install_grant(self, grant):
+        # limit amount of pin codes by installing grants only a day before reservation
+        grant.install_at = grant.starts_at - timedelta(days=1)
+        grant.save(update_fields=['install_at'])
+
     def install_grant(self, grant):
         print('Installing Abloy grant: [%s]' % grant)
         assert grant.state == grant.INSTALLING
@@ -388,15 +393,15 @@ class AbloyDriver(AccessControlDriver):
                         err_code = ''
                         err_str = ''
                     status_code = resp.status_code
-                    # self.logger.error(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                    print(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
-                    #raise Exception(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
+                    self.logger.error(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
+                    print(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}") # remove me
+                    raise Exception(f"Abloy API error [HTTP {status_code}] [{err_code}] {err_str}")
                 # raise Exception("Grant API POST failed!")
 
             if not resp.content:
                 return None
             else:
-                print("resp json: " + str(resp.json()))
+                print("resp json: " + str(resp.json())) # remove me
                 return resp.json()
 
 
