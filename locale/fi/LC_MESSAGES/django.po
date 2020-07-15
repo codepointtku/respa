@@ -1743,3 +1743,6 @@ msgstr "Ei kirjautumista"
 
 msgid "This value cannot be set to more than zero if resource authentication is: "
 msgstr "Tätä ei voi asettaa yli nollaksi, jos resurssin tunnistautuminen on: "
+
+msgid "This cannot be enabled if resource authentication is: "
+msgstr "Tätä ei voi laittaa päälle, jos resurssin tunnistautuminen on: "

@@ -805,6 +805,14 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
                             _('Unauthenticated')]
                         )}
                 )
+            if self.is_access_code_enabled():
+                raise ValidationError(
+                    {'access_code_type': format_lazy(
+                        '{}'*2,
+                        *[_('This cannot be enabled if resource authentication is: '),
+                            _('Unauthenticated')]
+                        )}
+                )
 
 class ResourceImage(ModifiableModel):
     TYPES = (
