@@ -523,7 +523,16 @@ class Reservation(ModifiableModel):
 
     def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):
         if self.resource.unit.sms_reminder:
-            if self.reminder:
+            # only allow certain notification types as reminders e.g. exclude reservation_access_code_created
+            allowed_reminder_notification_types = (
+                NotificationType.RESERVATION_CONFIRMED,
+                NotificationType.RESERVATION_CREATED,
+                NotificationType.RESERVATION_CREATED_BY_OFFICIAL,
+                NotificationType.RESERVATION_CREATED_WITH_ACCESS_CODE,
+                NotificationType.RESERVATION_CREATED_WITH_ACCESS_CODE_BY_OFFICIAL,
+                )
+
+            if self.reminder and notification_type in allowed_reminder_notification_types:
                 self.reminder.notification_type = self.reminder.notification_type if self.reminder.notification_type else notification_type
                 self.reminder.user = self.reminder.user if self.reminder.user else user
                 self.reminder.action_by_official = self.reminder.action_by_official if self.reminder.action_by_official else action_by_official
