@@ -160,7 +160,8 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
         model = Reservation
         fields = [
             'url', 'id', 'resource', 'user', 'begin', 'end', 'comments', 'is_own', 'state', 'need_manual_confirmation',
-            'require_assistance', 'require_workstation', 'staff_event', 'access_code', 'user_permissions', 'preferred_language', 'type'
+            'require_assistance', 'require_workstation', 'staff_event', 'access_code', 'user_permissions', 'preferred_language', 'type',
+            'has_arrived'
         ] + list(RESERVATION_EXTRA_FIELDS)
         read_only_fields = list(RESERVATION_EXTRA_FIELDS)
 
@@ -238,6 +239,19 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
             resource = data['resource']
         except KeyError:
             resource = reservation.resource
+            data.update({
+                'resource': resource
+            })
+        
+        if not data.get('begin', None):
+            data.update({
+                'begin': reservation.begin
+            })
+        
+        if not data.get('end', None):
+            data.update({
+                'end': reservation.end
+            })
 
         if not resource.can_make_reservations(request_user):
             raise PermissionDenied(_('You are not allowed to make reservations in this resource.'))
@@ -861,7 +875,7 @@ class ReservationBulkViewSet(viewsets.ModelViewSet, ReservationCacheMixin):
                 }
             })
             res = reservations[0]
-            url = ''.join(['http://', get_current_site(request).domain, '/v1/', 'reservation/', str(res.id), '/'])
+            url = ''.join([request.is_secure() and 'https' or 'http', get_current_site(request).domain, '/v1/', 'reservation/', str(res.id), '/'])
             ical_file = build_reservations_ical_file(reservations)
             attachment = ('reservation.ics', ical_file, 'text/calendar')
             res.send_reservation_mail(
