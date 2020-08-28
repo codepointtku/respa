@@ -772,6 +772,7 @@ class ReservationBulkViewSet(viewsets.ModelViewSet, ReservationCacheMixin):
         data.update({
             'user': request.user
         })
+        resource_id = data.get('resource')
         try:
             for key in stack:
                 begin = key.get('begin')
@@ -786,17 +787,10 @@ class ReservationBulkViewSet(viewsets.ModelViewSet, ReservationCacheMixin):
             for key in stack:
                 begin = parse_datetime(key.get('begin'))
                 end = parse_datetime(key.get('end'))
-                #begin =  datetime.fromtimestamp(mktime(strptime(str(key.get('begin')), '%Y-%m-%dT%H:%M:%S.%fz')))
-                #end = datetime.fromtimestamp(mktime(strptime(str(key.get('end')), '%Y-%m-%dT%H:%M:%S.%fz')))
-                resource = data.get('resource')
-                if not resource:
-                    raise Exception("No resource")
-                for res in Resource.objects.all():
-                    if res.id == resource:
-                        resource = res
-                        break
-                if not isinstance(resource, Resource):
-                    raise Exception("Invalid resource type")
+                try:
+                    resource = Resource.objects.get(id=resource_id)
+                except:
+                    raise
                 data['resource'] = resource
                 res = Reservation(
                     **data
@@ -832,7 +826,6 @@ class ReservationBulkViewSet(viewsets.ModelViewSet, ReservationCacheMixin):
                 {% endfor %}
             {% endif %}
             """
-            sleep(uniform(.035, .450))
             for res in reservations:
                 res.state = 'confirmed'
                 if resource.validate_reservation_period(res, res.user):
@@ -853,7 +846,6 @@ class ReservationBulkViewSet(viewsets.ModelViewSet, ReservationCacheMixin):
                             'recurring_validation_error': _('Reservation failed. Overlap with existing reservations.')
                         }, status=400
                     )
-                sleep(uniform(.015, .175))
                 res.save()
                 reservation_dates_context['dates'].append(
                     {
