@@ -939,7 +939,7 @@ def test_admins_can_see_reservations_in_all_states(
 @pytest.mark.django_db
 def test_reservation_cannot_be_confirmed_without_permission(
         api_client, user_api_client, detail_url, reservation,
-        reservation_data, general_admin):
+        reservation_data, user2):
     reservation.state = Reservation.REQUESTED
     reservation.save()
     reservation_data['state'] = Reservation.CONFIRMED
@@ -948,10 +948,10 @@ def test_reservation_cannot_be_confirmed_without_permission(
     assert response.status_code == 400
     assert 'state' in response.data
 
-    api_client.force_authenticate(user=general_admin)
+    api_client.force_authenticate(user=user2)
     response = api_client.put(detail_url, data=reservation_data)
-    assert response.status_code == 400
-    assert 'state' in response.data
+    assert response.status_code == 403
+    assert response.data['detail'].code == 'permission_denied'
 
 
 @pytest.mark.django_db
