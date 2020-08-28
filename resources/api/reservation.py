@@ -460,7 +460,6 @@ class ReservationSerializer(ExtraDataMixin, TranslatedModelSerializer, munigeo_a
             'can_delete': can_modify_and_delete,
         }
 
-
 class UserFilterBackend(filters.BaseFilterBackend):
     """
     Filter by user uuid and by is_own.
@@ -983,7 +982,7 @@ class ReservationViewSet(munigeo_api.GeoModelAPIView, viewsets.ModelViewSet, Res
         new_state = serializer.validated_data.pop('state', old_instance.state)
         new_instance = serializer.save(modified_by=self.request.user)
         new_instance.set_state(new_state, self.request.user)
-        if new_state == old_instance.state and new_state not in ['denied']: # Reservation was modified
+        if new_state == old_instance.state and new_state not in ['denied'] and self.request.method != 'PATCH': # Reservation was modified, don't send modified upon patch.
             if self.request.user.is_staff:
                 self.send_modified_mail(new_instance, staff=True)
             else:
