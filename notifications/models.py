@@ -11,6 +11,7 @@ from jinja2.exceptions import TemplateError
 from jinja2.sandbox import SandboxedEnvironment
 from parler.models import TranslatableModel, TranslatedFields
 from parler.utils.context import switch_language
+from resources.models.base import ModifiableModel
 
 DEFAULT_LANG = settings.LANGUAGES[0][0]
 
@@ -99,8 +100,15 @@ class NotificationTemplate(TranslatableModel):
     )
 
     type = models.CharField(
-        verbose_name=_('Type'), choices=NOTIFICATION_TYPE_CHOICES, max_length=100, unique=True, db_index=True
+        verbose_name=_('Type'), choices=NOTIFICATION_TYPE_CHOICES, max_length=100, db_index=True
     )
+    name = models.CharField(
+        verbose_name=_('Name'), max_length=100, default='default', help_text=_('Name that is used to help differentiate between two templates when listing all templates.')
+    )
+
+    template_group = models.ForeignKey(
+        'NotificationTemplateGroup', null=True, blank=True, 
+        verbose_name=_('Template group'), on_delete=models.SET_NULL, help_text=_('Select the template group that the template is going to be a part of, to set template as the default leave blank.'))
 
     translations = TranslatedFields(
         short_message=models.TextField(
@@ -122,7 +130,10 @@ class NotificationTemplate(TranslatableModel):
     def __str__(self):
         for t in self.NOTIFICATION_TYPE_CHOICES:
             if t[0] == self.type:
-                return str(t[1])
+                if self.name:
+                    return str(t[1]) + ' ' + self.name
+                else:
+                    return str(t[1])
         return 'N/A'
 
     def render(self, context, language_code=DEFAULT_LANG):
@@ -187,3 +198,21 @@ def render_notification_template(notification_type, context, language_code=DEFAU
         raise NotificationTemplateException(e) from e
 
     return template.render(context, language_code)
+
+class NotificationTemplateGroup(ModifiableModel):
+    identifier = models.CharField(verbose_name=_('Identifier'), max_length=100)
+    name = models.CharField(verbose_name=_('Name'), max_length=200)
+    templates = models.ManyToManyField(NotificationTemplate, 
+                                        verbose_name=_('Templates'),
+                                        related_name='groups',
+                                        blank=True)
+
+    class Meta:
+        verbose_name = _('Notification template groups')
+        verbose_name_plural = _('Notification template groups')
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+        

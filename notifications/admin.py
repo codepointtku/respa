@@ -1,7 +1,9 @@
 from parler.admin import TranslatableAdmin
 from parler.forms import TranslatableModelForm
+from django.contrib import admin
 from django.contrib.admin import site as admin_site
-from .models import NotificationTemplate
+from .models import NotificationTemplate, NotificationTemplateGroup
+from resources.admin.base import PopulateCreatedAndModifiedMixin, CommonExcludeMixin
 
 
 class NotificationTemplateForm(TranslatableModelForm):
@@ -9,13 +11,20 @@ class NotificationTemplateForm(TranslatableModelForm):
         super().__init__(*args, **kwargs)
         # Do not allow the admin to choose any of the template types that already
         # exist.
+        '''
         qs = NotificationTemplate.objects.values_list('type', flat=True)
         if self.instance and self.instance.type:
             qs = qs.exclude(id=self.instance.id)
         existing_types = set(qs)
         choices = [x for x in self.fields['type'].choices if x[0] not in existing_types]
         self.fields['type'].choices = choices
+        '''
+        
 
+class NotificationGroupAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin,
+                            admin.ModelAdmin):
+    pass
+                    
 
 class NotificationTemplateAdmin(TranslatableAdmin):
     #
@@ -26,4 +35,5 @@ class NotificationTemplateAdmin(TranslatableAdmin):
     form = NotificationTemplateForm
 
 
+admin_site.register(NotificationTemplateGroup, NotificationGroupAdmin)
 admin_site.register(NotificationTemplate, NotificationTemplateAdmin)

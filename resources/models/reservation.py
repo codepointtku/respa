@@ -14,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from psycopg2.extras import DateTimeTZRange
 
-from notifications.models import NotificationTemplate, NotificationTemplateException, NotificationType
+from notifications.models import NotificationTemplate, NotificationTemplateException, NotificationType, NotificationTemplateGroup
 from resources.signals import (
     reservation_modified, reservation_confirmed, reservation_cancelled
 )
@@ -463,6 +463,12 @@ class Reservation(ModifiableModel):
         if not user:
             user = self.user
         with translation.override(language_code):
+            reserver_home_municipality = self.home_municipality_id
+            for municipality in self.resource.get_included_home_municipality_names():
+                if municipality['id'] == self.home_municipality_id:
+                    reserver_home_municipality = municipality['name'].get(language_code, None)
+                    break
+
             reserver_name = self.reserver_name
             reserver_email_address = self.reserver_email_address
             if not reserver_name and self.user and self.user.get_display_name():
@@ -480,7 +486,8 @@ class Reservation(ModifiableModel):
                 'reserver_email_address': reserver_email_address,
                 'require_assistance': self.require_assistance,
                 'require_workstation': self.require_workstation,
-                'extra_question': self.reservation_extra_questions
+                'extra_question': self.reservation_extra_questions,
+                'home_municipality_id': reserver_home_municipality
             }
             directly_included_fields = (
                 'number_of_participants',
@@ -494,7 +501,7 @@ class Reservation(ModifiableModel):
                 'billing_phone_number',
                 'billing_address_street',
                 'billing_address_zip',
-                'billing_address_city',
+                'billing_address_city'
             )
             for field in directly_included_fields:
                 context[field] = getattr(self, field)
@@ -542,7 +549,38 @@ class Reservation(ModifiableModel):
             })
         return context
 
-    def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):
+    def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):     
+        if self.resource.unit.notification_template_group_id:
+            print(f"Unit has a template group, checking if group includes a template of type: {notification_type}.")
+            try:
+                unit_template_group = NotificationTemplateGroup.objects.get(id=self.resource.unit.notification_template_group_id)
+
+                notification_template = unit_template_group.templates.get(type=notification_type)
+                print(f"Notification type: {notification_type}, was found in unit template group: {unit_template_group.name}.")
+
+
+            except (NotificationTemplateGroup.DoesNotExist, NotificationTemplate.DoesNotExist):
+                print(f"Notification type: {notification_type} was not found in unit template group.")
+
+                try:
+                    notification_template = NotificationTemplate.objects.get(type=notification_type, template_group_id=None)
+                    print(f"Notification type: {notification_type} was found in defaults.")
+                except NotificationTemplate.DoesNotExist:
+                    print(f"Notification type: {notification_type} does not exist in defaults.")
+                    return
+
+        else:
+            print(f"Unit has no template group, using default template.")
+            try:
+                notification_template = NotificationTemplate.objects.get(type=notification_type, template_group_id=None)
+                print(f"Notification type: {notification_type} was found in defaults.")
+            except NotificationTemplate.DoesNotExist:
+                print(f"Notification type: {notification_type} does not exist in defaults.")
+                return
+
+
+
+
         if self.resource.unit.sms_reminder:
             # only allow certain notification types as reminders e.g. exclude reservation_access_code_created
             allowed_reminder_notification_types = (
@@ -562,13 +600,7 @@ class Reservation(ModifiableModel):
         Stuff common to all reservation related mails.
 
         If user isn't given use self.user.
-        """
-        try:
-            notification_template = NotificationTemplate.objects.get(type=notification_type)
-        except NotificationTemplate.DoesNotExist:
-            print('Notification type: %s does not exist' % notification_type)
-            return
-
+        """        
         if getattr(self, 'order', None) and self.billing_email_address:
             email_address = self.billing_email_address
         elif user:

@@ -13,6 +13,7 @@ from .base import AutoIdentifiedModel, ModifiableModel
 from .utils import create_datetime_days_from_now, get_translated, get_translated_name
 from .availability import get_opening_hours
 from .permissions import UNIT_PERMISSIONS
+from notifications.models import NotificationTemplate, NotificationTemplateGroup
 
 from munigeo.models import Municipality
 
@@ -88,6 +89,13 @@ class Unit(ModifiableModel, AutoIdentifiedModel):
                                            null=True, blank=True)
     municipality = models.ForeignKey(Municipality, null=True, blank=True, verbose_name=_('Municipality'),
                                      on_delete=models.SET_NULL)
+
+    
+    notification_template_group = models.ForeignKey(NotificationTemplateGroup,
+                                    null=True,
+                                    blank=True,
+                                    verbose_name=_('Notification Template Group'),
+                                    on_delete=models.SET_NULL)
 
     picture_url = models.URLField(verbose_name=_('Picture URL'), max_length=200,
                                   null=True, blank=True)
