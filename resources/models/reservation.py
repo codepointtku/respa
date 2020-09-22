@@ -554,8 +554,8 @@ class Reservation(ModifiableModel):
             print(f"Unit has a template group, checking if group includes a template of type: {notification_type}.")
             try:
                 unit_template_group = NotificationTemplateGroup.objects.get(id=self.resource.unit.notification_template_group_id)
-
                 notification_template = unit_template_group.templates.get(type=notification_type)
+                print(f"Template is a member of the following groups: {notification_template.groups.all()}")
                 print(f"Notification type: {notification_type}, was found in unit template group: {unit_template_group.name}.")
 
 
@@ -563,7 +563,7 @@ class Reservation(ModifiableModel):
                 print(f"Notification type: {notification_type} was not found in unit template group.")
 
                 try:
-                    notification_template = NotificationTemplate.objects.get(type=notification_type, template_group_id=None)
+                    notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
                     print(f"Notification type: {notification_type} was found in defaults.")
                 except NotificationTemplate.DoesNotExist:
                     print(f"Notification type: {notification_type} does not exist in defaults.")
@@ -572,12 +572,11 @@ class Reservation(ModifiableModel):
         else:
             print(f"Unit has no template group, using default template.")
             try:
-                notification_template = NotificationTemplate.objects.get(type=notification_type, template_group_id=None)
+                notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
                 print(f"Notification type: {notification_type} was found in defaults.")
             except NotificationTemplate.DoesNotExist:
                 print(f"Notification type: {notification_type} does not exist in defaults.")
                 return
-
 
 
 

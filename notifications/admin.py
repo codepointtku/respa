@@ -7,7 +7,7 @@ from resources.admin.base import PopulateCreatedAndModifiedMixin, CommonExcludeM
 
 
 class NotificationTemplateForm(TranslatableModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):   
         super().__init__(*args, **kwargs)
         # Do not allow the admin to choose any of the template types that already
         # exist.
@@ -19,13 +19,11 @@ class NotificationTemplateForm(TranslatableModelForm):
         choices = [x for x in self.fields['type'].choices if x[0] not in existing_types]
         self.fields['type'].choices = choices
         '''
-        
 
 class NotificationGroupAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin,
                             admin.ModelAdmin):
     pass
                     
-
 class NotificationTemplateAdmin(TranslatableAdmin):
     #
     # When attempting to save, validate Jinja templates based on

@@ -106,9 +106,9 @@ class NotificationTemplate(TranslatableModel):
         verbose_name=_('Name'), max_length=100, default='default', help_text=_('Name that is used to help differentiate between two templates when listing all templates.')
     )
 
-    template_group = models.ForeignKey(
-        'NotificationTemplateGroup', null=True, blank=True, 
-        verbose_name=_('Template group'), on_delete=models.SET_NULL, help_text=_('Select the template group that the template is going to be a part of, to set template as the default leave blank.'))
+    is_default_template = models.BooleanField(
+        verbose_name=_('Set this template as a default template.'), default=False
+    )
 
     translations = TranslatedFields(
         short_message=models.TextField(
@@ -205,7 +205,8 @@ class NotificationTemplateGroup(ModifiableModel):
     templates = models.ManyToManyField(NotificationTemplate, 
                                         verbose_name=_('Templates'),
                                         related_name='groups',
-                                        blank=True)
+                                        blank=True,
+                                        limit_choices_to={'is_default_template': False})
 
     class Meta:
         verbose_name = _('Notification template groups')
