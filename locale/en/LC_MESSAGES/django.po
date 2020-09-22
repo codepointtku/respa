@@ -2410,3 +2410,23 @@ msgid ""
 "permissions to many objects within Respa. This is almost as powerful as "
 "superuser."
 msgstr ""
+
+#: notifications/models.py:182
+msgid "Default template already exists"
+msgstr "A default template of this type already exists."
+
+msgid "Name that is used to help differentiate between two templates when listing all templates."
+msgstr ""
+
+msgid "Use this template as a default template for this type."
+msgstr "Use this template as a default template for this type, each type can only have one default."
+
+msgid "Set this template as a default template."
+msgstr "Use as a default template."
+
+
+msgid "Notification template group"
+msgstr ""
+
+msgid "Notification template groups"
+msgstr ""

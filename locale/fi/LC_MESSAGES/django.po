@@ -1787,3 +1787,21 @@ msgstr "Tätä ei voi asettaa yli nollaksi, jos resurssin tunnistautuminen on: "
 
 msgid "This cannot be enabled if resource authentication is: "
 msgstr "Tätä ei voi laittaa päälle, jos resurssin tunnistautuminen on: "
+
+msgid "Default template already exists"
+msgstr "Tälle pohjatyypille on jo entuudestaan määritetty oletuspohja."
+
+msgid "Name that is used to help differentiate between two templates when listing all templates."
+msgstr "Pohjan nimi, esim. yksikön nimi."
+
+msgid "Set this template as a default template."
+msgstr "Aseta oletuspohjaksi"
+
+msgid "Use this template as a default template for this type."
+msgstr "Käytä tätä pohjaa oletuspohjana tälle tyypille, jokaisella tyypillä on korkeintaan yksi oletuspohja."
+
+msgid "Notification template group"
+msgstr "Herätemalliryhmä"
+
+msgid "Notification template groups"
+msgstr "Herätemalliryhmät"

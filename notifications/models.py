@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import translation
 from django.utils.html import strip_tags
@@ -107,7 +108,7 @@ class NotificationTemplate(TranslatableModel):
     )
 
     is_default_template = models.BooleanField(
-        verbose_name=_('Set this template as a default template.'), default=False
+        verbose_name=_('Set this template as a default template.'), default=False, help_text=_('Use this template as a default template for this type.')
     )
 
     translations = TranslatedFields(
@@ -167,6 +168,19 @@ class NotificationTemplate(TranslatableModel):
             except TemplateError as e:
                 raise NotificationTemplateException(e) from e
 
+    def clean(self, **kwargs):
+        super().clean()
+        if self.is_default_template:
+            if NotificationTemplate.objects.filter(id=self.id, type=self.type, is_default_template=True).exists():
+                logger.info("Saving modified default template of type {}.".format(self.type))
+
+            elif NotificationTemplate.objects.filter(type=self.type, is_default_template=True).exists():
+                logger.info("Attempted to save a new default template. A default template of type {} already exists.".format(self.type))
+                raise ValidationError({'is_default_template':_('Default template already exists')})
+
+            elif NotificationTemplate.objects.filter(type=self.type, is_default_template=False).exists():
+                logger.info("New default template of type {} was created.".format(self.type))
+
 
 def reservation_time(res):
     if isinstance(res, dict):
@@ -203,13 +217,13 @@ class NotificationTemplateGroup(ModifiableModel):
     identifier = models.CharField(verbose_name=_('Identifier'), max_length=100)
     name = models.CharField(verbose_name=_('Name'), max_length=200)
     templates = models.ManyToManyField(NotificationTemplate, 
-                                        verbose_name=_('Templates'),
+                                        verbose_name=_('Notification templates'),
                                         related_name='groups',
                                         blank=True,
                                         limit_choices_to={'is_default_template': False})
 
     class Meta:
-        verbose_name = _('Notification template groups')
+        verbose_name = _('Notification template group')
         verbose_name_plural = _('Notification template groups')
         ordering = ('name',)
 

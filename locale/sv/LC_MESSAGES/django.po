@@ -1722,3 +1722,21 @@ msgstr "Det här värdet kan inte vara mer än noll, om resursens autentisering 
 
 msgid "This cannot be enabled if resource authentication is: "
 msgstr "Det här går inte att aktivera om resursens autentisering är: "
+
+msgid "Default template already exists"
+msgstr "En mall av denna typ är redan markerad som standard."
+
+msgid "Name that is used to help differentiate between two templates when listing all templates."
+msgstr "Mall namn, t.ex. namn på enheten."
+
+msgid "Set this template as a default template."
+msgstr "Använd som standardmall"
+
+msgid "Use this template as a default template for this type."
+msgstr "Använd denna mall som standard för denna typ."
+
+msgid "Notification template group"
+msgstr "Mallgrupp"
+
+msgid "Notification template groups"
+msgstr "Mallgrupper"
