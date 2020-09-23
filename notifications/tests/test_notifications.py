@@ -15,12 +15,14 @@ def notification_type():
 def notification_template(notification_type):
     template = NotificationTemplate.objects.language('en').create(
         type=NotificationType.TEST,
+        is_default_template=True,
         short_message="test short message, variable value: {{ short_message_var }}!",
         subject="test subject, variable value: {{ subject_var }}!",
         body="test body, variable value: {{ body_var }}!",
         html_body="test <b>HTML</b> body, variable value: {{ html_body_var }}!",
     )
     template.set_current_language('fi')
+    template.is_default_template = True
     template.short_message = "testilyhytviesti, muuttujan arvo: {{ short_message_var }}!"
     template.subject = "testiotsikko, muuttujan arvo: {{ subject_var }}!"
     template.body = "testiruumis, muuttujan arvo: {{ body_var }}!"

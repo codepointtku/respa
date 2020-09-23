@@ -67,6 +67,7 @@ def reservation_created_notification():
     with translation.override('fi'):
         return NotificationTemplate.objects.create(
             type=NotificationType.RESERVATION_CREATED,
+            is_default_template=True,
             short_message='Reservation created short message.',
             subject='Reservation created subject.',
             body='Reservation created body. \n' + get_body_with_all_template_vars()
@@ -79,6 +80,7 @@ def reservation_cancelled_notification():
     with translation.override('fi'):
         return NotificationTemplate.objects.create(
             type=NotificationType.RESERVATION_CANCELLED,
+            is_default_template=True,
             short_message='Reservation cancelled short message.',
             subject='Reservation cancelled subject.',
             body='Reservation cancelled body. \n' + get_body_with_all_template_vars()

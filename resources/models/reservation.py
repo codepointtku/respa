@@ -549,19 +549,19 @@ class Reservation(ModifiableModel):
             })
         return context
 
-    def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):     
+    def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):
+        # Check if resource's unit has a template group and if that group contains a notification template with correct notification type.
         if self.resource.unit.notification_template_group_id:
             print(f"Unit has a template group, checking if group includes a template of type: {notification_type}.")
             try:
+                # Check if template group contains a notification template with correct notification type.
                 unit_template_group = NotificationTemplateGroup.objects.get(id=self.resource.unit.notification_template_group_id)
                 notification_template = unit_template_group.templates.get(type=notification_type)
-                print(f"Template is a member of the following groups: {notification_template.groups.all()}")
                 print(f"Notification type: {notification_type}, was found in unit template group: {unit_template_group.name}.")
 
 
             except (NotificationTemplateGroup.DoesNotExist, NotificationTemplate.DoesNotExist):
-                print(f"Notification type: {notification_type} was not found in unit template group.")
-
+                # Otherwise search all notification templates for the default template of this type.
                 try:
                     notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
                     print(f"Notification type: {notification_type} was found in defaults.")
@@ -569,8 +569,8 @@ class Reservation(ModifiableModel):
                     print(f"Notification type: {notification_type} does not exist in defaults.")
                     return
 
+        # Otherwise search all notification templates for the default template of this type.
         else:
-            print(f"Unit has no template group, using default template.")
             try:
                 notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
                 print(f"Notification type: {notification_type} was found in defaults.")

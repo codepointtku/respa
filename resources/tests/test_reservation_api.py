@@ -168,6 +168,7 @@ def reservation_created_notification():
     with translation.override('en'):
         return NotificationTemplate.objects.create(
             type=NotificationType.RESERVATION_CREATED,
+            is_default_template=True,
             short_message='Normal reservation created short message.',
             subject='Normal reservation created subject.',
             body='Normal reservation created body.',
@@ -1201,6 +1202,7 @@ def test_reservation_mails(
     with translation.override('en'):
         NotificationTemplate.objects.create(
             type=NotificationType.RESERVATION_CANCELLED_BY_OFFICIAL,
+            is_default_template=True,
             subject='Reservation cancelled',
             body='Reservation has been cancelled.',
         )
@@ -1308,6 +1310,7 @@ def test_reservation_mails_in_finnish(
     with translation.override('fi'):
         NotificationTemplate.objects.create(
             type=NotificationType.RESERVATION_CANCELLED_BY_OFFICIAL,
+            is_default_template=True,
             subject='Varaus peruttu',
             body='Varauksesi on peruttu.',
         )
