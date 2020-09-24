@@ -569,6 +569,16 @@ class Reservation(ModifiableModel):
                     print(f"Notification type: {notification_type} does not exist in defaults.")
                     return
 
+            except NotificationTemplate.MultipleObjectsReturned:
+                # Multiple templates found with same type, using default template instead.
+                logger.error(f"Template group: {unit_template_group.name} contains multiple templates of type: {notification_type}.")
+                try:
+                    notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
+                    print(f"Notification type: {notification_type} was found in defaults.")
+                except NotificationTemplate.DoesNotExist:
+                    print(f"Notification type: {notification_type} does not exist in defaults.")
+                    return
+
         # Otherwise search all notification templates for the default template of this type.
         else:
             try:
