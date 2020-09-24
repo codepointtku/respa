@@ -552,21 +552,17 @@ class Reservation(ModifiableModel):
     def send_reservation_mail(self, notification_type, user=None, attachments=None, action_by_official=False, staff_email=None, extra_context={}, is_reminder=False):
         # Check if resource's unit has a template group and if that group contains a notification template with correct notification type.
         if self.resource.unit.notification_template_group_id:
-            print(f"Unit has a template group, checking if group includes a template of type: {notification_type}.")
             try:
                 # Check if template group contains a notification template with correct notification type.
                 unit_template_group = NotificationTemplateGroup.objects.get(id=self.resource.unit.notification_template_group_id)
                 notification_template = unit_template_group.templates.get(type=notification_type)
-                print(f"Notification type: {notification_type}, was found in unit template group: {unit_template_group.name}.")
 
 
             except (NotificationTemplateGroup.DoesNotExist, NotificationTemplate.DoesNotExist):
                 # Otherwise search all notification templates for the default template of this type.
                 try:
                     notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
-                    print(f"Notification type: {notification_type} was found in defaults.")
                 except NotificationTemplate.DoesNotExist:
-                    print(f"Notification type: {notification_type} does not exist in defaults.")
                     return
 
             except NotificationTemplate.MultipleObjectsReturned:
@@ -574,18 +570,14 @@ class Reservation(ModifiableModel):
                 logger.error(f"Template group: {unit_template_group.name} contains multiple templates of type: {notification_type}.")
                 try:
                     notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
-                    print(f"Notification type: {notification_type} was found in defaults.")
                 except NotificationTemplate.DoesNotExist:
-                    print(f"Notification type: {notification_type} does not exist in defaults.")
                     return
 
         # Otherwise search all notification templates for the default template of this type.
         else:
             try:
                 notification_template = NotificationTemplate.objects.get(type=notification_type, groups=None, is_default_template=True)
-                print(f"Notification type: {notification_type} was found in defaults.")
             except NotificationTemplate.DoesNotExist:
-                print(f"Notification type: {notification_type} does not exist in defaults.")
                 return
 
 
