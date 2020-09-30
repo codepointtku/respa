@@ -3,9 +3,7 @@ from django.forms.widgets import PasswordInput
 from django.utils.translation import gettext_lazy as _
 
 
-
 from respa_outlook.models import RespaOutlookConfiguration, RespaOutlookReservation
-
 
 
 class RespaOutlookConfigurationAdmin(ModelAdmin):
@@ -16,17 +14,15 @@ class RespaOutlookConfigurationAdmin(ModelAdmin):
         form = super(RespaOutlookConfigurationAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields["password"].widget = PasswordInput(render_value=True)
         return form
-        
+
     class Meta:
         verbose_name = _("Outlook configuration")
         verbose_name_plural = _("Outlook configurations")
 
 
-
 class RespaOutlookReservationAdmin(ModelAdmin):
     list_display = ('name', 'reservation',)
     search_fields = ('name', 'reservation',)
-
 
     class Meta:
         verbose_name = _('Outlook reservation')
@@ -37,6 +33,7 @@ class RespaOutlookReservationAdmin(ModelAdmin):
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
+
 
 site.register(RespaOutlookConfiguration, RespaOutlookConfigurationAdmin)
 site.register(RespaOutlookReservation, RespaOutlookReservationAdmin)

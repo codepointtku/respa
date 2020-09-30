@@ -30,6 +30,7 @@ class CateringProvider(viewsets.ReadOnlyModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = CateringProviderFilter
 
+
 register_view(CateringProvider, 'catering_provider')
 
 
@@ -50,6 +51,7 @@ class CateringProductCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CateringProductCategorySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = CateringProductCategoryFilter
+
 
 register_view(CateringProductCategoryViewSet, 'catering_product_category')
 
@@ -73,6 +75,7 @@ class CateringProductViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CateringProductSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     filterset_class = CateringProductFilter
+
 
 register_view(CateringProductViewSet, 'catering_product')
 

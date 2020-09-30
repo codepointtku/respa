@@ -9,10 +9,10 @@ from respa_outlook.manager import RespaOutlookManager, store
 
 from sys import argv
 
+
 class RespaOutlookConfig(AppConfig):
     name = 'respa_outlook'
     verbose_name = 'Respa Outlook'
-
 
     def ready(self):
         from respa_outlook.signals import configuration_delete, configuration_save
@@ -22,7 +22,7 @@ class RespaOutlookConfig(AppConfig):
         if settings.USE_RESPA_EXCHANGE:
             for configuration in RespaOutlookConfiguration.objects.all():
                 store.items.update({
-                    configuration.id : RespaOutlookManager(configuration)
+                    configuration.id: RespaOutlookManager(configuration)
                 })
                 if store.items.get(configuration.id).pop_from_store:      # Remove failed managers
                     store.items.pop(configuration.id)
@@ -37,5 +37,3 @@ class RespaOutlookConfig(AppConfig):
             sender=RespaOutlookConfiguration,
             dispatch_uid='respa-outlook-config-delete'
         )
-        
-

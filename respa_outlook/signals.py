@@ -16,9 +16,6 @@ def configuration_delete(sender, **kwargs):
     if manager:
         manager.pop_from_store = True
         logger.info("Removing configuration")
-    
-    
-
 
 
 def configuration_save(sender, **kwargs):

@@ -10,6 +10,7 @@ from copy import copy
 
 from threading import Thread, Event
 
+
 class Listen():
     def __init__(self, store):
         self.store = store
@@ -29,7 +30,7 @@ class Listen():
         while not self.signal.wait(0):
             pop = []
 
-            configs = copy(self.configs) # Avoid RunTimeError this way
+            configs = copy(self.configs)  # Avoid RunTimeError this way
 
             for manager in configs:
                 self.manager = self.configs[manager]
@@ -53,13 +54,14 @@ class Listen():
             for manager in pop:
                 self.configs.pop(manager.configuration.id)
             sleep(settings.OUTLOOK_POLLING_RATE)
-    
+
     def stop(self):
         self.signal.set()
 
-
     def handle_add(self):
         for appointment in self.calendar:
+            if len(appointment.body.split('respa_id=')) == 1:
+                continue
             try:
                 RespaOutlookReservation.objects.get(exchange_id=appointment.id)
                 continue
@@ -76,22 +78,26 @@ class Listen():
                         appointment.delete()
                     continue
         self.handle_modify()
-    
+
     def handle_modify(self):
         for appointment in self.calendar:
+            if len(appointment.body.split('respa_id=')) == 1:
+                continue
             try:
                 respa_outlook = RespaOutlookReservation.objects.get(exchange_id=appointment.id)
                 reservation = respa_outlook.reservation
                 if (appointment.start == reservation.begin and
-                    appointment.end == reservation.end):
-                   continue
+                        appointment.end == reservation.end):
+                    continue
                 self.config.handle_modify(reservation, appointment)
             except:
                 continue
         self.handle_remove()
-    
+
     def handle_remove(self):
         for appointment in self.calendar:
+            if len(appointment.body.split('respa_id=')) == 1:
+                continue
             try:
                 respa_outlook = RespaOutlookReservation.objects.get(exchange_id=appointment.id)
                 reservation = respa_outlook.reservation
@@ -112,4 +118,3 @@ class Listen():
                 outlook.reservation.state = 'cancelled'
                 reservation.save()
                 outlook.delete()
-
