@@ -45,7 +45,7 @@ env = environ.Env(
     RESPA_ADMIN_SUPPORT_EMAIL=(str, ''),
     RESPA_ADMIN_VIEW_RESOURCE_URL=(str, ''),
     RESPA_ADMIN_VIEW_UNIT_URL=(str, ''),
-    RESPA_ERROR_EMAIL=(str,''),
+    RESPA_ERROR_EMAIL=(str, ''),
     RESPA_ADMIN_LOGO=(str, ''),
     RESPA_ADMIN_KORO_STYLE=(str, ''),
     RESPA_PAYMENTS_ENABLED=(bool, False),
@@ -56,9 +56,9 @@ env = environ.Env(
     TUNNISTAMO_BASE_URL=(str, ''),
     SOCIAL_AUTH_TUNNISTAMO_KEY=(str, ''),
     SOCIAL_AUTH_TUNNISTAMO_SECRET=(str, ''),
-    OIDC_AUDIENCE=(str,''),
+    OIDC_AUDIENCE=(str, ''),
     OIDC_SECRET=(str, ''),
-    OIDC_API_SCOPE_PREFIX=(str,''),
+    OIDC_API_SCOPE_PREFIX=(str, ''),
     OIDC_API_AUTHORIZATION_FIELD=(str, ''),
     OIDC_REQUIRE_API_SCOPE_FOR_AUTHENTICATION=(bool, False),
     OIDC_ISSUER=(str, ''),
@@ -71,13 +71,13 @@ env = environ.Env(
     AUTHENTICATION_CLASSES=(list, ['helusers.jwt.JWTAuthentication']),
     HELUSERS_AUTHENTICATION_BACKEND=(str, 'helusers.tunnistamo_oidc.TunnistamoOIDCAuth'),
     USE_SWAGGER_OPENAPI_VIEW=(bool, False),
-    USE_RESPA_EXCHANGE=(bool, False),
+    USE_RESPA_OUTLOOK=(bool, False),
     EMAIL_HOST=(str, ''),
     MACHINE_TO_MACHINE_AUTH_ENABLED=(bool, False),
     JWT_AUTH_HEADER_PREFIX=(str, "JWT"),
-    JWT_LEEWAY=(int, 30), # seconds
-    JWT_LIFETIME=(int, 3600), # generated jwt token expires after this many seconds
-    JWT_PAYLOAD_HANDLER=(str, 'respa.machine_to_machine_auth.utils.jwt_payload_handler'), # generates jwt token payload
+    JWT_LEEWAY=(int, 30),  # seconds
+    JWT_LIFETIME=(int, 3600),  # generated jwt token expires after this many seconds
+    JWT_PAYLOAD_HANDLER=(str, 'respa.machine_to_machine_auth.utils.jwt_payload_handler'),  # generates jwt token payload
     ENABLE_RESOURCE_TOKEN_AUTH=(bool, False),
     DISABLE_SERVER_SIDE_CURSORS=(bool, False)
 )
@@ -110,7 +110,7 @@ SECURE_PROXY_SSL_HEADER = env('SECURE_PROXY_SSL_HEADER')
 SITE_ID = 1
 
 USE_SWAGGER_OPENAPI_VIEW = env('USE_SWAGGER_OPENAPI_VIEW')
-USE_RESPA_EXCHANGE = env('USE_RESPA_EXCHANGE')
+USE_RESPA_OUTLOOK = env('USE_RESPA_OUTLOOK')
 
 # Application definition
 INSTALLED_APPS = [
@@ -140,7 +140,7 @@ INSTALLED_APPS = [
     'anymail',
     'reversion',
     'django_admin_json_editor',
-    'multi_email_field',            #https://github.com/Christophe31/django-multi-email-field.git
+    'multi_email_field',  # https://github.com/Christophe31/django-multi-email-field.git
     'social_django',
     'allauth',
     'allauth.account',
@@ -318,11 +318,11 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES':
-         env('AUTHENTICATION_CLASSES')
+    env('AUTHENTICATION_CLASSES')
         + ([
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
-    ] if DEBUG else []),
+            "rest_framework.authentication.SessionAuthentication",
+            "rest_framework.authentication.BasicAuthentication",
+        ] if DEBUG else []),
     'DEFAULT_PAGINATION_CLASS': 'resources.pagination.DefaultPagination',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_RENDERER_CLASSES': (
@@ -464,7 +464,8 @@ if 'SECRET_KEY' not in locals():
         import random
         system_random = random.SystemRandom()
         try:
-            SECRET_KEY = ''.join([system_random.choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(64)])
+            SECRET_KEY = ''.join([system_random.choice(
+                'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(64)])
             secret = open(secret_file, 'w')
             os.chmod(secret_file, 0o0600)
             secret.write(SECRET_KEY)

@@ -19,7 +19,7 @@ class RespaOutlookConfig(AppConfig):
         from respa_outlook.models import RespaOutlookConfiguration
         from respa_outlook.polling import Listen
 
-        if settings.USE_RESPA_EXCHANGE:
+        if settings.USE_RESPA_OUTLOOK:
             for configuration in RespaOutlookConfiguration.objects.all():
                 store.items.update({
                     configuration.id: RespaOutlookManager(configuration)
