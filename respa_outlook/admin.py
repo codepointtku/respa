@@ -7,13 +7,16 @@ from respa_outlook.models import RespaOutlookConfiguration, RespaOutlookReservat
 
 
 class RespaOutlookConfigurationAdmin(ModelAdmin):
-    list_display = ('name', 'email', 'resource')
+    list_display = ('name', 'email', 'resource', 'resource_email')
     search_fields = ('name', 'email', 'resource')
 
     def get_form(self, request, obj=None, **kwargs):  # pragma: no cover
         form = super(RespaOutlookConfigurationAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields["password"].widget = PasswordInput(render_value=True)
         return form
+
+    def resource_email(self, obj):
+        return obj.resource.resource_email or 'No email provided.'
 
     class Meta:
         verbose_name = _("Outlook configuration")

@@ -60,7 +60,7 @@ class Listen():
 
     def handle_add(self):
         for appointment in self.calendar:
-            if len(appointment.body.split('respa_id=')) <= 1:
+            if len(appointment.body.split('respa_fingerprint=')) <= 1:
                 continue
             try:
                 RespaOutlookReservation.objects.get(exchange_id=appointment.id)
@@ -81,7 +81,7 @@ class Listen():
 
     def handle_modify(self):
         for appointment in self.calendar:
-            if len(appointment.body.split('respa_id=')) <= 1:
+            if len(appointment.body.split('respa_fingerprint=')) <= 1:
                 continue
             try:
                 respa_outlook = RespaOutlookReservation.objects.get(exchange_id=appointment.id)
@@ -96,7 +96,7 @@ class Listen():
 
     def handle_remove(self):
         for appointment in self.calendar:
-            if len(appointment.body.split('respa_id=')) <= 1:
+            if len(appointment.body.split('respa_fingerprint=')) <= 1:
                 continue
             try:
                 respa_outlook = RespaOutlookReservation.objects.get(exchange_id=appointment.id)

@@ -52,6 +52,7 @@ class CustomUserManage(forms.Form):
             Q(auth_token__isnull=False) | Q(is_staff=True)
         ).distinct().order_by('email', 'username')
     )
+
     def validate(self, user):
         super().validate(user)
 
@@ -115,6 +116,7 @@ class ResourceAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin, Transla
     list_filter = ('unit', 'public', 'reservable')
     list_select_related = ('unit',)
     ordering = ('unit', 'name')
+    exclude = ('configuration', )
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
@@ -269,17 +271,21 @@ class ReservationMetadataSetAdmin(PopulateCreatedAndModifiedMixin, admin.ModelAd
     exclude = CommonExcludeMixin.exclude + ('id',)
     form = ReservationMetadataSetForm
 
+
 class ReservationHomeMunicipalityFieldAdmin(CommonExcludeMixin, TranslationAdmin):
     pass
+
 
 class ReservationHomeMunicipalitySetForm(forms.ModelForm):
     class Meta:
         model = ReservationHomeMunicipalitySet
         exclude = CommonExcludeMixin.exclude + ('id',)
 
+
 class ReservationHomeMunicipalitySetAdmin(PopulateCreatedAndModifiedMixin, admin.ModelAdmin):
     exclude = CommonExcludeMixin.exclude + ('id',)
     form = ReservationHomeMunicipalitySetForm
+
 
 class ResourceGroupAdmin(PopulateCreatedAndModifiedMixin, CommonExcludeMixin, FixedGuardedModelAdminMixin,
                          admin.ModelAdmin):
@@ -379,14 +385,18 @@ class ReservationMetadataFieldAdmin(admin.ModelAdmin):
             ]
         return super().formfield_for_dbfield(db_field, **kwargs)
 
+
 class ReservationBulkAdmin(admin.ModelAdmin):
     pass
+
 
 class ReservationReminderAdmin(admin.ModelAdmin):
     extra_readonly_fields_on_update = ('reservation_type',)
 
 # Override TokenAdmin of django rest framework
 # to use raw_id_field on user
+
+
 class RespaTokenAdmin(admin.ModelAdmin):
     list_display = ('key', 'user', 'created')
     fields = ('user',)

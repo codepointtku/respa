@@ -7,6 +7,7 @@ from respa_outlook.manager import store, ToEWSDateTime
 from exchangelib import CalendarItem, Mailbox, Attendee, EWSTimeZone
 from exchangelib.properties import Mailbox
 from exchangelib.version import EXCHANGE_2016
+from uuid import uuid4
 from os.path import abspath, join
 from datetime import datetime, timedelta
 
@@ -14,7 +15,6 @@ from datetime import datetime, timedelta
 import time
 
 from resources.models import Reservation
-from resources.models.utils import send_respa_mail
 
 
 from copy import copy
@@ -46,6 +46,10 @@ class RespaOutlookConfiguration(models.Model):
         except:
             return self.name
 
+    def clean(self):
+        if not self.resource.resource_email:
+            raise ValidationError("No resource email provided in the resource.")
+
     def handle_create(self, reservation):
         if not reservation.reserver_email_address:
             return
@@ -63,7 +67,8 @@ class RespaOutlookConfiguration(models.Model):
             account=manager.account,
             folder=manager.calendar,
             subject='Reservation created',
-            body='You have created an reservation',
+            body='You have created an reservation\n\nrespa_fingerprint=%(respa_fingerprint)s' % ({
+                'respa_fingerprint': uuid4()}),
             start=ToEWSDateTime(reservation.begin),
             end=ToEWSDateTime(reservation.end),
             categories=[],
@@ -131,12 +136,6 @@ class RespaOutlookConfiguration(models.Model):
             )
             reservation.clean()
             reservation.save()
-            ret = send_respa_mail(
-                email_address=email,
-                subject="Reservation created",
-                body="Reservation via outlook created"
-            )
-            print(ret[0], ret[1])
 
         RespaOutlookReservation(
             name='%s (%s)' % (reservation.reserver_email_address, self.resource.name),
@@ -177,10 +176,9 @@ class RespaOutlookReservation(models.Model):
         # Beautiful autopep8 art.
         return \
             int((self.modified.replace(tzinfo=pytz.timezone('Europe/Helsinki')) -
-                 datetime(year=1970, month=1, day=1, hour=0, minute=0, second=0)
+                 datetime(year=1970, month=1, day=1)
                  .replace(tzinfo=pytz.timezone('Europe/Helsinki'))).total_seconds()) \
             if self.modified else \
             int((datetime.now().replace(tzinfo=None) -
-                 datetime(
-                year=1970, month=1, day=1, hour=0, minute=0, second=0)
-                .replace(tzinfo=None)).total_seconds())
+                 datetime(year=1970, month=1, day=1)
+                 .replace(tzinfo=None)).total_seconds())
