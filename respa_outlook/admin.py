@@ -26,6 +26,7 @@ class RespaOutlookConfigurationAdmin(ModelAdmin):
 class RespaOutlookReservationAdmin(ModelAdmin):
     list_display = ('name', 'reservation',)
     search_fields = ('name', 'reservation',)
+    exclude = ('exchange_id', 'exchange_changekey', )
 
     class Meta:
         verbose_name = _('Outlook reservation')
