@@ -8,7 +8,7 @@ from respa_outlook.manager import store
 
 
 class RespaOutlookConfigurationAdmin(ModelAdmin):
-    list_display = ('name', 'email', 'resource', 'resource_email', 'status')
+    list_display = ('name', 'email', 'resource', 'resource_email', 'status', 'message')
     search_fields = ('name', 'email', 'resource')
 
     def get_form(self, request, obj=None, **kwargs):  # pragma: no cover
@@ -18,6 +18,10 @@ class RespaOutlookConfigurationAdmin(ModelAdmin):
 
     def resource_email(self, obj):
         return obj.resource.resource_email or 'No email provided.'
+
+    def message(self, obj):
+        manager = store.get(obj.id)
+        return manager.message
 
     def status(self, obj):
         manager = store.get(obj.id)

@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+
 from exchangelib import Account, Credentials, EWSDateTime, EWSTimeZone, IMPERSONATION, DELEGATE, Configuration
 from exchangelib.errors import ErrorSchemaValidation, ErrorImpersonateUserDenied, ErrorAccessDenied
 from datetime import datetime, timedelta
@@ -17,6 +19,7 @@ class RespaOutlookManager:
         self.pop_from_store = False
         self.failed = False
         self.reported = False
+        self.message = '-'
         try:
             self.account = self._get_account()
             self.calendar = self.account.calendar
@@ -28,6 +31,7 @@ class RespaOutlookManager:
                 'resource_email': self.configuration.resource.resource_email
             }))
             self.failed = True
+            self.message = _("Insufficient permissions.")
 
     def future(self):
         return self.account.calendar.filter(end__gte=ToEWSDateTime(datetime.now().replace(microsecond=0)))

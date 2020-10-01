@@ -2,6 +2,7 @@ from django.conf import settings
 
 from respa_outlook.models import RespaOutlookReservation
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from exchangelib.errors import ErrorItemNotFound, ErrorAccessDenied
 
@@ -53,6 +54,7 @@ class Listen():
                     self.handle_add()
                     self.manager.failed = False
                     self.manager.reported = False
+                    self.manager.message = '-'
                 except ErrorAccessDenied:
                     if not self.manager.reported:
                         logger.warning("Configuration email: \"%(config_email)s\" does not have the permission to access resource \"%(resource)s\" email: \"%(resource_email)s\"" % ({
@@ -61,6 +63,7 @@ class Listen():
                             'resource_email': self.config.resource.resource_email
                         }))
                         self.manager.reported = True
+                    self.manager.message = _("Insufficient permissions.")
                     self.manager.failed = True
 
                 self.manager = None
