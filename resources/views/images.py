@@ -1,9 +1,10 @@
 import os
 from mimetypes import guess_type
 
-from django.http.response import FileResponse, HttpResponseBadRequest
+from django.http.response import FileResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.generic import DetailView
 from easy_thumbnails.files import get_thumbnailer
+from easy_thumbnails.exceptions import InvalidImageFormatError
 
 from resources.models import ResourceImage
 
@@ -47,17 +48,20 @@ class ResourceImageView(DetailView):
         else:
             width = height = None
 
-        if not width:
-            out_image = image.image
-            filename = image.image.name
-        else:
-            out_image = get_thumbnailer(image.image).get_thumbnail({
-                'size': (width, height),
-                'box': image.cropping,
-                'crop': True,
-                'detail': True,
-            })
-            filename = "%s-%dx%d%s" % (image.image.name, width, height, os.path.splitext(out_image.name)[1])
+        try:
+            if not width:
+                out_image = image.image
+                filename = image.image.name
+            else:
+                out_image = get_thumbnailer(image.image).get_thumbnail({
+                    'size': (width, height),
+                    'box': image.cropping,
+                    'crop': True,
+                    'detail': True,
+                })
+                filename = "%s-%dx%d%s" % (image.image.name, width, height, os.path.splitext(out_image.name)[1])
+        except InvalidImageFormatError:
+            return HttpResponseNotFound()
 
         # FIXME: Use SendFile headers instead of Django output when not in debug mode
         out_image.seek(0)

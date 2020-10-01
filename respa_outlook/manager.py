@@ -1,9 +1,13 @@
 from exchangelib import Account, Credentials, EWSDateTime, EWSTimeZone, IMPERSONATION, DELEGATE, Configuration
-from exchangelib.errors import ErrorSchemaValidation, ErrorImpersonateUserDenied
+from exchangelib.errors import ErrorSchemaValidation, ErrorImpersonateUserDenied, ErrorAccessDenied
 from datetime import datetime, timedelta
 from time import sleep
 
 from threading import Lock
+
+import logging
+
+logger = logging.getLogger()
 
 
 class RespaOutlookManager:
@@ -11,13 +15,19 @@ class RespaOutlookManager:
         self.configuration = configuration
         self.account = None
         self.pop_from_store = False
+        self.failed = False
+        self.reported = False
         try:
             self.account = self._get_account()
             self.calendar = self.account.calendar
-        except ErrorImpersonateUserDenied:
-            print("Email: %s does not have the permission to impersonate resource email: %s" %
-                  (self.configuration.email, self.configuration.resource.resource_email))
-            self.pop_from_store = True
+            self.future()[0]
+        except ErrorAccessDenied:
+            logger.warning("Configuration email: \"%(config_email)s\" does not have the permission to access resource \"%(resource)s\" email: \"%(resource_email)s\"" % ({
+                'config_email': self.configuration.email,
+                'resource': self.configuration.resource.name,
+                'resource_email': self.configuration.resource.resource_email
+            }))
+            self.failed = True
 
     def future(self):
         return self.account.calendar.filter(end__gte=ToEWSDateTime(datetime.now().replace(microsecond=0)))
@@ -25,7 +35,7 @@ class RespaOutlookManager:
     def _get_account(self):
         resource = self.configuration.resource
         if not self.account:
-            self.account = Account(primary_smtp_address=resource.resource_email or self.configuration.email, credentials=Credentials(
+            self.account = Account(primary_smtp_address=resource.resource_email, credentials=Credentials(
                 self.configuration.email, self.configuration.password), autodiscover=True, access_type=DELEGATE)
         else:
             ews_url = self.account.protocol.service_endpoint
@@ -74,10 +84,15 @@ class Store:
         self.items.update({
             instance.id: RespaOutlookManager(instance)
         })
-        res = Resource.objects.get(pk=instance.resource.id)
-        if res:
+        try:
+            res = Resource.objects.get(pk=instance.resource.id)
             res.configuration = instance
-        res.save()
+            res.save()
+        except:
+            ...
+
+    def get(self, id):
+        return self.items.get(id, None)
 
 
 store = Store()

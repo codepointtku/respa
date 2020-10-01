@@ -4,10 +4,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 from respa_outlook.models import RespaOutlookConfiguration, RespaOutlookReservation
+from respa_outlook.manager import store
 
 
 class RespaOutlookConfigurationAdmin(ModelAdmin):
-    list_display = ('name', 'email', 'resource', 'resource_email')
+    list_display = ('name', 'email', 'resource', 'resource_email', 'status')
     search_fields = ('name', 'email', 'resource')
 
     def get_form(self, request, obj=None, **kwargs):  # pragma: no cover
@@ -17,6 +18,11 @@ class RespaOutlookConfigurationAdmin(ModelAdmin):
 
     def resource_email(self, obj):
         return obj.resource.resource_email or 'No email provided.'
+
+    def status(self, obj):
+        manager = store.get(obj.id)
+        return not manager.failed
+    status.boolean = True
 
     class Meta:
         verbose_name = _("Outlook configuration")

@@ -3,12 +3,16 @@ from django.conf import settings
 from respa_outlook.models import RespaOutlookReservation
 from django.core.exceptions import ValidationError
 
-from exchangelib.errors import ErrorItemNotFound
+from exchangelib.errors import ErrorItemNotFound, ErrorAccessDenied
 
 from time import sleep, time
 from copy import copy
 
 from threading import Thread, Event
+
+import logging
+
+logger = logging.getLogger()
 
 
 class Listen():
@@ -45,7 +49,19 @@ class Listen():
                 assert self.config is not None
                 assert self.calendar is not None
 
-                self.handle_add()
+                try:
+                    self.handle_add()
+                    self.manager.failed = False
+                    self.manager.reported = False
+                except ErrorAccessDenied:
+                    if not self.manager.reported:
+                        logger.warning("Configuration email: \"%(config_email)s\" does not have the permission to access resource \"%(resource)s\" email: \"%(resource_email)s\"" % ({
+                            'config_email': self.config.email,
+                            'resource': self.config.resource.name,
+                            'resource_email': self.config.resource.resource_email
+                        }))
+                        self.manager.reported = True
+                    self.manager.failed = True
 
                 self.manager = None
                 self.config = None

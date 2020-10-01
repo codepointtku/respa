@@ -24,8 +24,6 @@ class RespaOutlookConfig(AppConfig):
                 store.items.update({
                     configuration.id: RespaOutlookManager(configuration)
                 })
-                if store.items.get(configuration.id).pop_from_store:      # Remove failed managers
-                    store.items.pop(configuration.id)
             Listen(store)
         post_save.connect(
             configuration_save,
